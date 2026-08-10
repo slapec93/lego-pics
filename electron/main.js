@@ -14,6 +14,7 @@ const { extractBricklinkPccs } = require('../src/scrape/extractors');
 const config = require('./config');
 
 const COLORS_PATH = path.join(__dirname, '..', 'assets', 'colors.json');
+const BUNDLED_ELEMENTS_PATH = path.join(__dirname, '..', 'assets', 'elements.csv');
 
 let mainWindow = null;
 // elements.csv is large; cache the parsed index keyed by path+mtime.
@@ -58,7 +59,10 @@ function loadColorMap() {
 }
 
 function getElements(csvPath) {
-  if (!csvPath || !fs.existsSync(csvPath)) {
+  // Fall back to the bundled elements.csv when the user hasn't pointed at their
+  // own (newer) copy.
+  if (!csvPath || !fs.existsSync(csvPath)) csvPath = BUNDLED_ELEMENTS_PATH;
+  if (!fs.existsSync(csvPath)) {
     throw new Error(`elements.csv not found at: ${csvPath || '(not set)'}`);
   }
   const mtime = fs.statSync(csvPath).mtimeMs;
@@ -78,10 +82,10 @@ function sendLog(sender, msg) {
 
 ipcMain.handle('config:get', () => {
   const cfg = config.load();
-  // Sensible default for the CSV if the user hasn't picked one yet.
-  if (!cfg.elementsCsvPath) {
-    const guess = path.join(app.getPath('home'), 'Downloads', 'elements.csv');
-    if (fs.existsSync(guess)) cfg.elementsCsvPath = guess;
+  // Default to the bundled elements.csv unless the user picked their own.
+  if (!cfg.elementsCsvPath && fs.existsSync(BUNDLED_ELEMENTS_PATH)) {
+    cfg.elementsCsvPath = BUNDLED_ELEMENTS_PATH;
+    cfg.elementsBundled = true;
   }
   cfg.colorsAvailable = fs.existsSync(COLORS_PATH);
   return cfg;

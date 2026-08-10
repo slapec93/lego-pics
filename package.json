@@ -8,11 +8,40 @@
     "cli": "node cli/index.js",
     "colors": "electron scripts/parse-saved-rb.js",
     "smoke": "electron scripts/smoke-app.js",
-    "test": "node --test"
+    "test": "node --test",
+    "dist": "electron-builder --mac --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^32.0.0"
+    "electron": "^32.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.legopics.app",
+    "productName": "LEGO Pics",
+    "directories": { "output": "dist" },
+    "files": [
+      "electron/**",
+      "src/**",
+      "renderer/**",
+      "assets/**",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["arm64", "x64"] },
+        { "target": "zip", "arch": ["arm64", "x64"] }
+      ],
+      "category": "public.app-category.utilities",
+      "identity": null
+    },
+    "win": {
+      "target": [
+        { "target": "zip", "arch": ["x64"] }
+      ]
+    }
   }
 }

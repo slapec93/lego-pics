@@ -7,7 +7,7 @@
  * over plain fetch).
  *
  * Usage:
- *   node cli/index.js inventory --xml <file.xml> --csv <elements.csv> --out <dir> [--concurrency 4]
+ *   node cli/index.js inventory --xml <file.xml> [--csv <elements.csv>] --out <dir> [--concurrency 4]
  *
  * BrickLink mode needs a real browser to scrape, so it lives in the Electron app
  * (npm start).
@@ -36,13 +36,14 @@ async function main() {
   const cmd = args._[0];
 
   if (cmd !== 'inventory') {
-    console.log('Usage: node cli/index.js inventory --xml <file.xml> --csv <elements.csv> --out <dir> [--concurrency 4]');
+    console.log('Usage: node cli/index.js inventory --xml <file.xml> [--csv <elements.csv>] --out <dir> [--concurrency 4]');
     console.log('(BrickLink part mode requires the GUI: npm start)');
     process.exit(cmd ? 1 : 0);
   }
 
+  const bundledCsv = path.join(__dirname, '..', 'assets', 'elements.csv');
   const xml = args.xml;
-  const csv = args.csv || path.join(process.env.HOME || '', 'Downloads', 'elements.csv');
+  const csv = args.csv || bundledCsv;
   const out = args.out;
   const concurrency = Number(args.concurrency) || 4;
   const colorsPath = path.join(__dirname, '..', 'assets', 'colors.json');

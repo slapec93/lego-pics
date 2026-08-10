@@ -30,6 +30,7 @@ header .sub { margin: 0 0 16px; color: var(--muted); }
 .settings { display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.field label .hint { text-transform: none; letter-spacing: 0; opacity: .7; }
 .field.concurrency { max-width: 160px; }
 .field.concurrency input { width: 80px; }
 .path-row { display: flex; gap: 8px; }

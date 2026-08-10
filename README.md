@@ -38,7 +38,10 @@ Inventory XML                     BrickLink part id
 | Source | What it gives | Where it comes from |
 |---|---|---|
 | `assets/colors.json` | BrickLink colour id → Rebrickable colour id + name | Baked from Rebrickable's colours page (see below) |
-| `elements.csv` | part + Rebrickable colour → element id (PCC) | [Rebrickable downloads](https://rebrickable.com/downloads/) (`elements.csv`) |
+| `assets/elements.csv` | part + Rebrickable colour → element id (PCC) | [Rebrickable downloads](https://rebrickable.com/downloads/) (`elements.csv`) |
+
+Both are **bundled** in `assets/`, so the app works out of the box. You can point at a
+newer `elements.csv` via **Browse…** (or `--csv`) when Rebrickable updates it.
 
 BrickLink's `catalogColors` page gives the PCC directly, so mode 2 needs neither file.
 
@@ -50,11 +53,11 @@ BrickLink's `catalogColors` page gives the PCC directly, so mode 2 needs neither
 npm install
 ```
 
-You need **`elements.csv`** from Rebrickable's [downloads page](https://rebrickable.com/downloads/)
-(the app defaults to `~/Downloads/elements.csv` if present; otherwise pick it in the UI).
-
-The colour map (`assets/colors.json`) is already generated and committed. To refresh
-it, see "Regenerating the colour map" below.
+That's it — both data files (`assets/elements.csv` and `assets/colors.json`) are
+bundled, so there's nothing else to download. Refresh `elements.csv` from Rebrickable's
+[downloads page](https://rebrickable.com/downloads/) only when you want newer parts
+(drop it in `assets/`, or pick it via **Browse…**). To refresh the colour map, see
+"Regenerating the colour map" below.
 
 ## Run the app
 
