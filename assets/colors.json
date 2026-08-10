@@ -1,0 +1,1802 @@
+{
+  "scrapedAt": "2026-08-10T09:06:05.563Z",
+  "source": "rebrickable.com/colors (saved page)",
+  "colors": [
+    {
+      "rbId": "320",
+      "name": "Dark Red",
+      "blIds": [
+        "59"
+      ]
+    },
+    {
+      "rbId": "1113",
+      "name": "HO Dark Red",
+      "blIds": []
+    },
+    {
+      "rbId": "100",
+      "name": "Light Salmon",
+      "blIds": [
+        "26"
+      ]
+    },
+    {
+      "rbId": "77",
+      "name": "Light Pink",
+      "blIds": [
+        "56"
+      ]
+    },
+    {
+      "rbId": "1037",
+      "name": "Modulex Violet",
+      "blIds": [
+        "147"
+      ]
+    },
+    {
+      "rbId": "1146",
+      "name": "Warm Pink",
+      "blIds": [
+        "175"
+      ]
+    },
+    {
+      "rbId": "1087",
+      "name": "Duplo Pink",
+      "blIds": []
+    },
+    {
+      "rbId": "1069",
+      "name": "Pearl Red",
+      "blIds": [
+        "252"
+      ]
+    },
+    {
+      "rbId": "13",
+      "name": "Pink",
+      "blIds": [
+        "23"
+      ]
+    },
+    {
+      "rbId": "1102",
+      "name": "Trans-Neon Red",
+      "blIds": []
+    },
+    {
+      "rbId": "1050",
+      "name": "Coral",
+      "blIds": [
+        "220"
+      ]
+    },
+    {
+      "rbId": "351",
+      "name": "Medium Dark Pink",
+      "blIds": [
+        "94"
+      ]
+    },
+    {
+      "rbId": "1038",
+      "name": "Modulex Pink",
+      "blIds": [
+        "148"
+      ]
+    },
+    {
+      "rbId": "114",
+      "name": "Glitter Trans-Dark Pink",
+      "blIds": [
+        "100"
+      ]
+    },
+    {
+      "rbId": "45",
+      "name": "Trans-Dark Pink",
+      "blIds": [
+        "50"
+      ]
+    },
+    {
+      "rbId": "1082",
+      "name": "Clikits Pink",
+      "blIds": []
+    },
+    {
+      "rbId": "69",
+      "name": "Light Purple",
+      "blIds": [
+        "93"
+      ]
+    },
+    {
+      "rbId": "29",
+      "name": "Bright Pink",
+      "blIds": [
+        "104"
+      ]
+    },
+    {
+      "rbId": "230",
+      "name": "Trans-Pink",
+      "blIds": [
+        "107"
+      ]
+    },
+    {
+      "rbId": "1099",
+      "name": "Glitter Trans-Pink",
+      "blIds": []
+    },
+    {
+      "rbId": "5",
+      "name": "Dark Pink",
+      "blIds": [
+        "47"
+      ]
+    },
+    {
+      "rbId": "1054",
+      "name": "Opal Trans-Dark Pink",
+      "blIds": [
+        "224"
+      ]
+    },
+    {
+      "rbId": "26",
+      "name": "Magenta",
+      "blIds": [
+        "71"
+      ]
+    },
+    {
+      "rbId": "63",
+      "name": "Chrome Pink",
+      "blIds": [
+        "82"
+      ]
+    },
+    {
+      "rbId": "22",
+      "name": "Purple",
+      "blIds": [
+        "24"
+      ]
+    },
+    {
+      "rbId": "373",
+      "name": "Sand Purple",
+      "blIds": [
+        "54"
+      ]
+    },
+    {
+      "rbId": "1007",
+      "name": "Reddish Lilac",
+      "blIds": [
+        "227"
+      ]
+    },
+    {
+      "rbId": "236",
+      "name": "Trans-Light Purple",
+      "blIds": [
+        "114"
+      ]
+    },
+    {
+      "rbId": "30",
+      "name": "Medium Lavender",
+      "blIds": [
+        "157"
+      ]
+    },
+    {
+      "rbId": "1059",
+      "name": "Opal Trans-Purple",
+      "blIds": [
+        "230"
+      ]
+    },
+    {
+      "rbId": "1046",
+      "name": "Modulex Foil Violet",
+      "blIds": [
+        "216"
+      ]
+    },
+    {
+      "rbId": "31",
+      "name": "Lavender",
+      "blIds": [
+        "154"
+      ]
+    },
+    {
+      "rbId": "1101",
+      "name": "Duplo Dark Purple",
+      "blIds": []
+    },
+    {
+      "rbId": "1097",
+      "name": "Glitter Trans-Medium Purple",
+      "blIds": []
+    },
+    {
+      "rbId": "1094",
+      "name": "Trans-Medium Purple",
+      "blIds": [
+        "234"
+      ]
+    },
+    {
+      "rbId": "1018",
+      "name": "Modulex Black",
+      "blIds": [
+        "128"
+      ]
+    },
+    {
+      "rbId": "85",
+      "name": "Dark Purple",
+      "blIds": [
+        "89"
+      ]
+    },
+    {
+      "rbId": "1001",
+      "name": "Medium Violet",
+      "blIds": [
+        "245"
+      ]
+    },
+    {
+      "rbId": "129",
+      "name": "Glitter Trans-Purple",
+      "blIds": [
+        "102"
+      ]
+    },
+    {
+      "rbId": "52",
+      "name": "Trans-Purple",
+      "blIds": [
+        "51"
+      ]
+    },
+    {
+      "rbId": "20",
+      "name": "Light Violet",
+      "blIds": [
+        "44"
+      ]
+    },
+    {
+      "rbId": "1147",
+      "name": "Blue Violet",
+      "blIds": [
+        "174"
+      ]
+    },
+    {
+      "rbId": "1093",
+      "name": "Light Lilac",
+      "blIds": [
+        "246"
+      ]
+    },
+    {
+      "rbId": "23",
+      "name": "Dark Blue-Violet",
+      "blIds": [
+        "109"
+      ]
+    },
+    {
+      "rbId": "112",
+      "name": "Medium Bluish Violet",
+      "blIds": [
+        "73"
+      ]
+    },
+    {
+      "rbId": "89",
+      "name": "Royal Blue",
+      "blIds": [
+        "97"
+      ]
+    },
+    {
+      "rbId": "1061",
+      "name": "Opal Trans-Dark Blue",
+      "blIds": [
+        "232"
+      ]
+    },
+    {
+      "rbId": "33",
+      "name": "Trans-Dark Blue",
+      "blIds": [
+        "14"
+      ]
+    },
+    {
+      "rbId": "110",
+      "name": "Violet",
+      "blIds": [
+        "43"
+      ]
+    },
+    {
+      "rbId": "1014",
+      "name": "Modulex Light Bluish Gray",
+      "blIds": [
+        "124"
+      ]
+    },
+    {
+      "rbId": "1073",
+      "name": "Pearl Black",
+      "blIds": [
+        "244"
+      ]
+    },
+    {
+      "rbId": "379",
+      "name": "Sand Blue",
+      "blIds": [
+        "55"
+      ]
+    },
+    {
+      "rbId": "137",
+      "name": "Pearl Sand Blue",
+      "blIds": [
+        "78"
+      ]
+    },
+    {
+      "rbId": "1123",
+      "name": "HO Medium Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "1",
+      "name": "Blue",
+      "blIds": [
+        "7"
+      ]
+    },
+    {
+      "rbId": "73",
+      "name": "Medium Blue",
+      "blIds": [
+        "42"
+      ]
+    },
+    {
+      "rbId": "272",
+      "name": "Dark Blue",
+      "blIds": [
+        "63"
+      ]
+    },
+    {
+      "rbId": "1109",
+      "name": "HO Dark Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "1006",
+      "name": "Trans-Light Royal Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "143",
+      "name": "Trans-Medium Blue",
+      "blIds": [
+        "74"
+      ]
+    },
+    {
+      "rbId": "1035",
+      "name": "Modulex Medium Blue",
+      "blIds": [
+        "144"
+      ]
+    },
+    {
+      "rbId": "1131",
+      "name": "HO Sand Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "212",
+      "name": "Bright Light Blue",
+      "blIds": [
+        "105"
+      ]
+    },
+    {
+      "rbId": "1034",
+      "name": "Modulex Tile Blue",
+      "blIds": [
+        "143"
+      ]
+    },
+    {
+      "rbId": "1044",
+      "name": "Modulex Foil Dark Blue",
+      "blIds": [
+        "214"
+      ]
+    },
+    {
+      "rbId": "61",
+      "name": "Chrome Blue",
+      "blIds": [
+        "52"
+      ]
+    },
+    {
+      "rbId": "1070",
+      "name": "Pearl Blue",
+      "blIds": [
+        "254"
+      ]
+    },
+    {
+      "rbId": "9",
+      "name": "Light Blue",
+      "blIds": [
+        "62"
+      ]
+    },
+    {
+      "rbId": "43",
+      "name": "Trans-Very Lt Blue",
+      "blIds": [
+        "113"
+      ]
+    },
+    {
+      "rbId": "313",
+      "name": "Maersk Blue",
+      "blIds": [
+        "72"
+      ]
+    },
+    {
+      "rbId": "1128",
+      "name": "HO Metallic Sand Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "321",
+      "name": "Dark Azure",
+      "blIds": [
+        "153"
+      ]
+    },
+    {
+      "rbId": "1105",
+      "name": "HO Azure",
+      "blIds": []
+    },
+    {
+      "rbId": "1125",
+      "name": "HO Metallic Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "1045",
+      "name": "Modulex Foil Light Blue",
+      "blIds": [
+        "215"
+      ]
+    },
+    {
+      "rbId": "1036",
+      "name": "Modulex Pastel Blue",
+      "blIds": [
+        "145"
+      ]
+    },
+    {
+      "rbId": "1107",
+      "name": "HO Cyan",
+      "blIds": []
+    },
+    {
+      "rbId": "1033",
+      "name": "Modulex Teal Blue",
+      "blIds": [
+        "146"
+      ]
+    },
+    {
+      "rbId": "232",
+      "name": "Sky Blue",
+      "blIds": [
+        "87"
+      ]
+    },
+    {
+      "rbId": "1106",
+      "name": "HO Blue-gray",
+      "blIds": []
+    },
+    {
+      "rbId": "1075",
+      "name": "Duplo Medium Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "1074",
+      "name": "Duplo Blue",
+      "blIds": [
+        "247"
+      ]
+    },
+    {
+      "rbId": "1008",
+      "name": "Vintage Blue",
+      "blIds": []
+    },
+    {
+      "rbId": "1051",
+      "name": "Pastel Blue",
+      "blIds": [
+        "72"
+      ]
+    },
+    {
+      "rbId": "322",
+      "name": "Medium Azure",
+      "blIds": [
+        "156"
+      ]
+    },
+    {
+      "rbId": "11",
+      "name": "Light Turquoise",
+      "blIds": [
+        "40"
+      ]
+    },
+    {
+      "rbId": "1003",
+      "name": "Glitter Trans-Light Blue",
+      "blIds": [
+        "162"
+      ]
+    },
+    {
+      "rbId": "1053",
+      "name": "Opal Trans-Light Blue",
+      "blIds": [
+        "223"
+      ]
+    },
+    {
+      "rbId": "3",
+      "name": "Dark Turquoise",
+      "blIds": [
+        "39"
+      ]
+    },
+    {
+      "rbId": "1115",
+      "name": "HO Dark Turquoise",
+      "blIds": []
+    },
+    {
+      "rbId": "41",
+      "name": "Trans-Light Blue",
+      "blIds": [
+        "15"
+      ]
+    },
+    {
+      "rbId": "1032",
+      "name": "Modulex Aqua Green",
+      "blIds": [
+        "142"
+      ]
+    },
+    {
+      "rbId": "323",
+      "name": "Light Aqua",
+      "blIds": [
+        "152"
+      ]
+    },
+    {
+      "rbId": "1104",
+      "name": "HO Aqua",
+      "blIds": []
+    },
+    {
+      "rbId": "118",
+      "name": "Aqua",
+      "blIds": [
+        "41"
+      ]
+    },
+    {
+      "rbId": "1090",
+      "name": "Duplo Turquoise",
+      "blIds": []
+    },
+    {
+      "rbId": "1108",
+      "name": "HO Dark Aqua",
+      "blIds": []
+    },
+    {
+      "rbId": "1118",
+      "name": "HO Light Aqua",
+      "blIds": []
+    },
+    {
+      "rbId": "1111",
+      "name": "HO Dark Green",
+      "blIds": []
+    },
+    {
+      "rbId": "288",
+      "name": "Dark Green",
+      "blIds": [
+        "80"
+      ]
+    },
+    {
+      "rbId": "62",
+      "name": "Chrome Green",
+      "blIds": [
+        "64"
+      ]
+    },
+    {
+      "rbId": "74",
+      "name": "Medium Green",
+      "blIds": [
+        "37"
+      ]
+    },
+    {
+      "rbId": "1071",
+      "name": "Pearl Green",
+      "blIds": [
+        "253"
+      ]
+    },
+    {
+      "rbId": "378",
+      "name": "Sand Green",
+      "blIds": [
+        "48"
+      ]
+    },
+    {
+      "rbId": "1132",
+      "name": "HO Sand Green",
+      "blIds": []
+    },
+    {
+      "rbId": "1078",
+      "name": "Duplo Medium Green",
+      "blIds": []
+    },
+    {
+      "rbId": "2",
+      "name": "Green",
+      "blIds": [
+        "6"
+      ]
+    },
+    {
+      "rbId": "1058",
+      "name": "Trans-Light Green",
+      "blIds": [
+        "221"
+      ]
+    },
+    {
+      "rbId": "1079",
+      "name": "Duplo Light Green",
+      "blIds": []
+    },
+    {
+      "rbId": "1098",
+      "name": "Glitter Trans-Green",
+      "blIds": []
+    },
+    {
+      "rbId": "34",
+      "name": "Trans-Green",
+      "blIds": [
+        "20"
+      ]
+    },
+    {
+      "rbId": "1060",
+      "name": "Opal Trans-Bright Green",
+      "blIds": [
+        "233"
+      ]
+    },
+    {
+      "rbId": "1042",
+      "name": "Modulex Foil Dark Green",
+      "blIds": [
+        "212"
+      ]
+    },
+    {
+      "rbId": "1009",
+      "name": "Vintage Green",
+      "blIds": []
+    },
+    {
+      "rbId": "1077",
+      "name": "Fabuland Lime",
+      "blIds": [
+        "248"
+      ]
+    },
+    {
+      "rbId": "1114",
+      "name": "HO Dark Sand Green",
+      "blIds": []
+    },
+    {
+      "rbId": "10",
+      "name": "Bright Green",
+      "blIds": [
+        "36"
+      ]
+    },
+    {
+      "rbId": "17",
+      "name": "Light Green",
+      "blIds": [
+        "38"
+      ]
+    },
+    {
+      "rbId": "1043",
+      "name": "Modulex Foil Light Green",
+      "blIds": [
+        "213"
+      ]
+    },
+    {
+      "rbId": "1030",
+      "name": "Modulex Pastel Green",
+      "blIds": [
+        "141"
+      ]
+    },
+    {
+      "rbId": "294",
+      "name": "Glow In Dark Trans",
+      "blIds": [
+        "118"
+      ]
+    },
+    {
+      "rbId": "1127",
+      "name": "HO Metallic Green",
+      "blIds": []
+    },
+    {
+      "rbId": "76",
+      "name": "Speckle DBGray-Silver",
+      "blIds": [
+        "117"
+      ]
+    },
+    {
+      "rbId": "1031",
+      "name": "Modulex Olive Green",
+      "blIds": [
+        "140"
+      ]
+    },
+    {
+      "rbId": "1057",
+      "name": "Trans-Light Bright Green",
+      "blIds": [
+        "226"
+      ]
+    },
+    {
+      "rbId": "1086",
+      "name": "Pearl Lime",
+      "blIds": []
+    },
+    {
+      "rbId": "81",
+      "name": "Metallic Green",
+      "blIds": [
+        "70"
+      ]
+    },
+    {
+      "rbId": "1002",
+      "name": "Glitter Trans-Neon Green",
+      "blIds": [
+        "163"
+      ]
+    },
+    {
+      "rbId": "1141",
+      "name": "Neon Green",
+      "blIds": [
+        "166"
+      ]
+    },
+    {
+      "rbId": "27",
+      "name": "Lime",
+      "blIds": [
+        "34"
+      ]
+    },
+    {
+      "rbId": "158",
+      "name": "Yellowish Green",
+      "blIds": [
+        "158"
+      ]
+    },
+    {
+      "rbId": "1096",
+      "name": "Glitter Trans-Bright Green",
+      "blIds": []
+    },
+    {
+      "rbId": "120",
+      "name": "Light Lime",
+      "blIds": [
+        "35"
+      ]
+    },
+    {
+      "rbId": "35",
+      "name": "Trans-Bright Green",
+      "blIds": [
+        "108"
+      ]
+    },
+    {
+      "rbId": "115",
+      "name": "Medium Lime",
+      "blIds": [
+        "76"
+      ]
+    },
+    {
+      "rbId": "1122",
+      "name": "HO Light Yellow",
+      "blIds": []
+    },
+    {
+      "rbId": "1029",
+      "name": "Modulex Lemon",
+      "blIds": [
+        "139"
+      ]
+    },
+    {
+      "rbId": "1112",
+      "name": "HO Dark Lime",
+      "blIds": []
+    },
+    {
+      "rbId": "1110",
+      "name": "HO Dark Gray",
+      "blIds": []
+    },
+    {
+      "rbId": "1129",
+      "name": "HO Olive Green",
+      "blIds": []
+    },
+    {
+      "rbId": "326",
+      "name": "Olive Green",
+      "blIds": [
+        "155"
+      ]
+    },
+    {
+      "rbId": "1142",
+      "name": "Dark Olive Green",
+      "blIds": [
+        "242"
+      ]
+    },
+    {
+      "rbId": "1076",
+      "name": "Duplo Lime",
+      "blIds": [
+        "171"
+      ]
+    },
+    {
+      "rbId": "42",
+      "name": "Trans-Neon Green",
+      "blIds": [
+        "16"
+      ]
+    },
+    {
+      "rbId": "1062",
+      "name": "Vibrant Yellow",
+      "blIds": [
+        "236"
+      ]
+    },
+    {
+      "rbId": "226",
+      "name": "Bright Light Yellow",
+      "blIds": [
+        "103"
+      ]
+    },
+    {
+      "rbId": "1121",
+      "name": "HO Light Tan",
+      "blIds": []
+    },
+    {
+      "rbId": "334",
+      "name": "Chrome Gold",
+      "blIds": [
+        "21"
+      ]
+    },
+    {
+      "rbId": "1005",
+      "name": "Trans-Fire Yellow",
+      "blIds": []
+    },
+    {
+      "rbId": "54",
+      "name": "Trans-Neon Yellow",
+      "blIds": [
+        "121"
+      ]
+    },
+    {
+      "rbId": "1011",
+      "name": "Vintage Yellow",
+      "blIds": []
+    },
+    {
+      "rbId": "1100",
+      "name": "Clikits Yellow",
+      "blIds": []
+    },
+    {
+      "rbId": "46",
+      "name": "Trans-Yellow",
+      "blIds": [
+        "19"
+      ]
+    },
+    {
+      "rbId": "1139",
+      "name": "Opal Trans-Yellow",
+      "blIds": [
+        "170"
+      ]
+    },
+    {
+      "rbId": "14",
+      "name": "Yellow",
+      "blIds": [
+        "3"
+      ]
+    },
+    {
+      "rbId": "1027",
+      "name": "Modulex Light Yellow",
+      "blIds": [
+        "137"
+      ]
+    },
+    {
+      "rbId": "18",
+      "name": "Light Yellow",
+      "blIds": [
+        "33"
+      ]
+    },
+    {
+      "rbId": "1117",
+      "name": "HO Gold",
+      "blIds": []
+    },
+    {
+      "rbId": "1120",
+      "name": "HO Light Gold",
+      "blIds": []
+    },
+    {
+      "rbId": "1028",
+      "name": "Modulex Ochre Yellow",
+      "blIds": [
+        "138"
+      ]
+    },
+    {
+      "rbId": "1048",
+      "name": "Modulex Foil Yellow",
+      "blIds": [
+        "218"
+      ]
+    },
+    {
+      "rbId": "82",
+      "name": "Metallic Gold",
+      "blIds": [
+        "65"
+      ]
+    },
+    {
+      "rbId": "1020",
+      "name": "Modulex Terracotta",
+      "blIds": [
+        "134"
+      ]
+    },
+    {
+      "rbId": "191",
+      "name": "Bright Light Orange",
+      "blIds": [
+        "110"
+      ]
+    },
+    {
+      "rbId": "19",
+      "name": "Tan",
+      "blIds": [
+        "2"
+      ]
+    },
+    {
+      "rbId": "1133",
+      "name": "HO Tan",
+      "blIds": []
+    },
+    {
+      "rbId": "28",
+      "name": "Dark Tan",
+      "blIds": [
+        "69"
+      ]
+    },
+    {
+      "rbId": "297",
+      "name": "Pearl Gold",
+      "blIds": [
+        "115"
+      ]
+    },
+    {
+      "rbId": "142",
+      "name": "Pearl Light Gold",
+      "blIds": [
+        "61"
+      ]
+    },
+    {
+      "rbId": "462",
+      "name": "Medium Orange",
+      "blIds": [
+        "31"
+      ]
+    },
+    {
+      "rbId": "1022",
+      "name": "Modulex Buff",
+      "blIds": [
+        "133"
+      ]
+    },
+    {
+      "rbId": "308",
+      "name": "Dark Brown",
+      "blIds": [
+        "120"
+      ]
+    },
+    {
+      "rbId": "1066",
+      "name": "Curry",
+      "blIds": [
+        "161"
+      ]
+    },
+    {
+      "rbId": "1091",
+      "name": "Warm Yellowish Orange",
+      "blIds": [
+        "172"
+      ]
+    },
+    {
+      "rbId": "1080",
+      "name": "Light Tan",
+      "blIds": []
+    },
+    {
+      "rbId": "1063",
+      "name": "Pearl Copper",
+      "blIds": [
+        "249"
+      ]
+    },
+    {
+      "rbId": "366",
+      "name": "Earth Orange",
+      "blIds": [
+        "29"
+      ]
+    },
+    {
+      "rbId": "1145",
+      "name": "Ochre Yellow",
+      "blIds": [
+        "173"
+      ]
+    },
+    {
+      "rbId": "125",
+      "name": "Light Orange",
+      "blIds": [
+        "32"
+      ]
+    },
+    {
+      "rbId": "1065",
+      "name": "Reddish Gold",
+      "blIds": [
+        "235"
+      ]
+    },
+    {
+      "rbId": "68",
+      "name": "Very Light Orange",
+      "blIds": [
+        "96"
+      ]
+    },
+    {
+      "rbId": "60",
+      "name": "Chrome Antique Brass",
+      "blIds": [
+        "57"
+      ]
+    },
+    {
+      "rbId": "1116",
+      "name": "HO Earth Orange",
+      "blIds": []
+    },
+    {
+      "rbId": "1021",
+      "name": "Modulex Brown",
+      "blIds": [
+        "132"
+      ]
+    },
+    {
+      "rbId": "182",
+      "name": "Trans-Orange",
+      "blIds": [
+        "98"
+      ]
+    },
+    {
+      "rbId": "1052",
+      "name": "Glitter Trans-Orange",
+      "blIds": [
+        "222"
+      ]
+    },
+    {
+      "rbId": "1012",
+      "name": "Fabuland Orange",
+      "blIds": [
+        "160"
+      ]
+    },
+    {
+      "rbId": "1089",
+      "name": "Warm Tan",
+      "blIds": [
+        "241"
+      ]
+    },
+    {
+      "rbId": "78",
+      "name": "Light Nougat",
+      "blIds": [
+        "90"
+      ]
+    },
+    {
+      "rbId": "1004",
+      "name": "Trans-Flame Yellowish Orange",
+      "blIds": [
+        "164"
+      ]
+    },
+    {
+      "rbId": "484",
+      "name": "Dark Orange",
+      "blIds": [
+        "68"
+      ]
+    },
+    {
+      "rbId": "25",
+      "name": "Orange",
+      "blIds": [
+        "4"
+      ]
+    },
+    {
+      "rbId": "1049",
+      "name": "Modulex Foil Orange",
+      "blIds": [
+        "219"
+      ]
+    },
+    {
+      "rbId": "1026",
+      "name": "Modulex Light Orange",
+      "blIds": [
+        "136"
+      ]
+    },
+    {
+      "rbId": "178",
+      "name": "Flat Dark Gold",
+      "blIds": [
+        "81"
+      ]
+    },
+    {
+      "rbId": "1085",
+      "name": "Two-tone Silver",
+      "blIds": [
+        "239"
+      ]
+    },
+    {
+      "rbId": "57",
+      "name": "Trans-Neon Orange",
+      "blIds": [
+        "18"
+      ]
+    },
+    {
+      "rbId": "1064",
+      "name": "Fabuland Red",
+      "blIds": []
+    },
+    {
+      "rbId": "84",
+      "name": "Medium Nougat",
+      "blIds": [
+        "150"
+      ]
+    },
+    {
+      "rbId": "450",
+      "name": "Fabuland Brown",
+      "blIds": [
+        "106"
+      ]
+    },
+    {
+      "rbId": "1088",
+      "name": "Medium Brown",
+      "blIds": [
+        "240"
+      ]
+    },
+    {
+      "rbId": "1084",
+      "name": "Two-tone Gold",
+      "blIds": [
+        "238"
+      ]
+    },
+    {
+      "rbId": "92",
+      "name": "Nougat",
+      "blIds": [
+        "28"
+      ]
+    },
+    {
+      "rbId": "1025",
+      "name": "Modulex Orange",
+      "blIds": [
+        "135"
+      ]
+    },
+    {
+      "rbId": "1137",
+      "name": "Sienna Brown",
+      "blIds": [
+        "169"
+      ]
+    },
+    {
+      "rbId": "6",
+      "name": "Brown",
+      "blIds": [
+        "8"
+      ]
+    },
+    {
+      "rbId": "1056",
+      "name": "Opal Trans-Brown",
+      "blIds": [
+        "229"
+      ]
+    },
+    {
+      "rbId": "134",
+      "name": "Copper",
+      "blIds": [
+        "84"
+      ]
+    },
+    {
+      "rbId": "70",
+      "name": "Reddish Brown",
+      "blIds": [
+        "88"
+      ]
+    },
+    {
+      "rbId": "1136",
+      "name": "Reddish Orange",
+      "blIds": [
+        "167"
+      ]
+    },
+    {
+      "rbId": "86",
+      "name": "Light Brown",
+      "blIds": [
+        "91"
+      ]
+    },
+    {
+      "rbId": "1119",
+      "name": "HO Light Brown",
+      "blIds": []
+    },
+    {
+      "rbId": "1067",
+      "name": "Dark Nougat",
+      "blIds": [
+        "225"
+      ]
+    },
+    {
+      "rbId": "1092",
+      "name": "Metallic Copper",
+      "blIds": [
+        "250"
+      ]
+    },
+    {
+      "rbId": "1072",
+      "name": "Pearl Brown",
+      "blIds": [
+        "255"
+      ]
+    },
+    {
+      "rbId": "1138",
+      "name": "Umber Brown",
+      "blIds": [
+        "168"
+      ]
+    },
+    {
+      "rbId": "1140",
+      "name": "Neon Orange",
+      "blIds": [
+        "165"
+      ]
+    },
+    {
+      "rbId": "1081",
+      "name": "Rust Orange",
+      "blIds": []
+    },
+    {
+      "rbId": "1068",
+      "name": "Bright Reddish Orange",
+      "blIds": [
+        "231"
+      ]
+    },
+    {
+      "rbId": "1024",
+      "name": "Modulex Pink Red",
+      "blIds": [
+        "130"
+      ]
+    },
+    {
+      "rbId": "1010",
+      "name": "Vintage Red",
+      "blIds": []
+    },
+    {
+      "rbId": "12",
+      "name": "Salmon",
+      "blIds": [
+        "25"
+      ]
+    },
+    {
+      "rbId": "1083",
+      "name": "Two-tone Copper",
+      "blIds": [
+        "237"
+      ]
+    },
+    {
+      "rbId": "4",
+      "name": "Red",
+      "blIds": [
+        "5"
+      ]
+    },
+    {
+      "rbId": "36",
+      "name": "Trans-Red",
+      "blIds": [
+        "17"
+      ]
+    },
+    {
+      "rbId": "1144",
+      "name": "Chrome Red",
+      "blIds": []
+    },
+    {
+      "rbId": "216",
+      "name": "Rust",
+      "blIds": [
+        "27"
+      ]
+    },
+    {
+      "rbId": "1023",
+      "name": "Modulex Red",
+      "blIds": [
+        "129"
+      ]
+    },
+    {
+      "rbId": "335",
+      "name": "Sand Red",
+      "blIds": [
+        "58"
+      ]
+    },
+    {
+      "rbId": "1047",
+      "name": "Modulex Foil Red",
+      "blIds": [
+        "217"
+      ]
+    },
+    {
+      "rbId": "1019",
+      "name": "Modulex Tile Brown",
+      "blIds": [
+        "131"
+      ]
+    },
+    {
+      "rbId": "79",
+      "name": "Milky White",
+      "blIds": [
+        "60"
+      ]
+    },
+    {
+      "rbId": "47",
+      "name": "Trans-Clear",
+      "blIds": [
+        "12"
+      ]
+    },
+    {
+      "rbId": "183",
+      "name": "Pearl White",
+      "blIds": [
+        "83"
+      ]
+    },
+    {
+      "rbId": "1124",
+      "name": "HO Medium Red",
+      "blIds": []
+    },
+    {
+      "rbId": "503",
+      "name": "Very Light Gray",
+      "blIds": [
+        "49"
+      ]
+    },
+    {
+      "rbId": "151",
+      "name": "Very Light Bluish Gray",
+      "blIds": [
+        "99"
+      ]
+    },
+    {
+      "rbId": "383",
+      "name": "Chrome Silver",
+      "blIds": [
+        "22"
+      ]
+    },
+    {
+      "rbId": "21",
+      "name": "Glow In Dark Opaque",
+      "blIds": [
+        "46"
+      ]
+    },
+    {
+      "rbId": "1135",
+      "name": "Metal",
+      "blIds": []
+    },
+    {
+      "rbId": "80",
+      "name": "Metallic Silver",
+      "blIds": [
+        "67"
+      ]
+    },
+    {
+      "rbId": "150",
+      "name": "Pearl Very Light Gray",
+      "blIds": [
+        "119"
+      ]
+    },
+    {
+      "rbId": "71",
+      "name": "Light Bluish Gray",
+      "blIds": [
+        "86"
+      ]
+    },
+    {
+      "rbId": "135",
+      "name": "Pearl Light Gray",
+      "blIds": [
+        "66"
+      ]
+    },
+    {
+      "rbId": "7",
+      "name": "Light Gray",
+      "blIds": [
+        "9"
+      ]
+    },
+    {
+      "rbId": "179",
+      "name": "Flat Silver",
+      "blIds": [
+        "95"
+      ]
+    },
+    {
+      "rbId": "1130",
+      "name": "HO Rose",
+      "blIds": []
+    },
+    {
+      "rbId": "8",
+      "name": "Dark Gray",
+      "blIds": [
+        "10"
+      ]
+    },
+    {
+      "rbId": "72",
+      "name": "Dark Bluish Gray",
+      "blIds": [
+        "85"
+      ]
+    },
+    {
+      "rbId": "40",
+      "name": "Trans-Brown",
+      "blIds": [
+        "13"
+      ]
+    },
+    {
+      "rbId": "1095",
+      "name": "Trans-Black",
+      "blIds": [
+        "251",
+        "2023"
+      ]
+    },
+    {
+      "rbId": "32",
+      "name": "Trans-Black IR Lens",
+      "blIds": []
+    },
+    {
+      "rbId": "1016",
+      "name": "Modulex Charcoal Gray",
+      "blIds": [
+        "126"
+      ]
+    },
+    {
+      "rbId": "1040",
+      "name": "Modulex Foil Dark Gray",
+      "blIds": [
+        "210"
+      ]
+    },
+    {
+      "rbId": "148",
+      "name": "Pearl Dark Gray",
+      "blIds": [
+        "77"
+      ]
+    },
+    {
+      "rbId": "1103",
+      "name": "Pearl Titanium",
+      "blIds": [
+        "77"
+      ]
+    },
+    {
+      "rbId": "64",
+      "name": "Chrome Black",
+      "blIds": [
+        "122"
+      ]
+    },
+    {
+      "rbId": "1017",
+      "name": "Modulex Tile Gray",
+      "blIds": [
+        "127"
+      ]
+    },
+    {
+      "rbId": "133",
+      "name": "Speckle Black-Gold",
+      "blIds": [
+        "151"
+      ]
+    },
+    {
+      "rbId": "75",
+      "name": "Speckle Black-Copper",
+      "blIds": [
+        "116"
+      ]
+    },
+    {
+      "rbId": "132",
+      "name": "Speckle Black-Silver",
+      "blIds": [
+        "111"
+      ]
+    },
+    {
+      "rbId": "0",
+      "name": "Black",
+      "blIds": [
+        "11"
+      ]
+    },
+    {
+      "rbId": "117",
+      "name": "Glitter Trans-Clear",
+      "blIds": [
+        "101"
+      ]
+    },
+    {
+      "rbId": "15",
+      "name": "White",
+      "blIds": [
+        "1"
+      ]
+    },
+    {
+      "rbId": "1143",
+      "name": "Glitter Milky White",
+      "blIds": []
+    },
+    {
+      "rbId": "1039",
+      "name": "Modulex Clear",
+      "blIds": [
+        "149"
+      ]
+    },
+    {
+      "rbId": "1055",
+      "name": "Opal Trans-Clear",
+      "blIds": [
+        "228"
+      ]
+    },
+    {
+      "rbId": "1013",
+      "name": "Modulex White",
+      "blIds": [
+        "123"
+      ]
+    },
+    {
+      "rbId": "1000",
+      "name": "Glow in Dark White",
+      "blIds": [
+        "159"
+      ]
+    },
+    {
+      "rbId": "1015",
+      "name": "Modulex Light Gray",
+      "blIds": [
+        "125"
+      ]
+    },
+    {
+      "rbId": "1041",
+      "name": "Modulex Foil Light Gray",
+      "blIds": [
+        "211"
+      ]
+    },
+    {
+      "rbId": "1134",
+      "name": "HO Titanium",
+      "blIds": []
+    },
+    {
+      "rbId": "1126",
+      "name": "HO Metallic Dark Gray",
+      "blIds": []
+    }
+  ]
+}

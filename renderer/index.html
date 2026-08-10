@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <title>LEGO Pics</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🧱 LEGO Pics</h1>
+    <p class="sub">Download element photos from a BrickLink inventory XML, or from a BrickLink part ID.</p>
+  </header>
+
+  <section class="settings card">
+    <div class="field">
+      <label>elements.csv</label>
+      <div class="path-row">
+        <input id="csvPath" type="text" placeholder="Rebrickable elements.csv" readonly />
+        <button id="pickCsv">Browse…</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Output folder</label>
+      <div class="path-row">
+        <input id="outputDir" type="text" placeholder="Where images are saved" readonly />
+        <button id="pickOutput">Browse…</button>
+        <button id="openOutput" title="Open folder">Open</button>
+      </div>
+    </div>
+    <div class="field concurrency">
+      <label>Parallel downloads</label>
+      <input id="concurrency" type="number" min="1" max="16" value="4" />
+      <span id="colorsBadge" class="badge"></span>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="inv">From Inventory XML</button>
+    <button class="tab" data-tab="bl">From BrickLink Part ID</button>
+  </nav>
+
+  <!-- Mode 1 -->
+  <section id="tab-inv" class="tabpane card">
+    <div class="field">
+      <label>Inventory XML</label>
+      <div class="path-row">
+        <input id="xmlPath" type="text" placeholder="BrickLink inventory export (.xml)" readonly />
+        <button id="pickXml">Browse…</button>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="analyzeBtn" class="primary">Analyze</button>
+      <button id="downloadInvBtn" class="primary" disabled>Download</button>
+      <span id="invSummary" class="summary"></span>
+    </div>
+    <div id="invResult" class="result"></div>
+  </section>
+
+  <!-- Mode 2 -->
+  <section id="tab-bl" class="tabpane card hidden">
+    <div class="field">
+      <label>BrickLink part ID</label>
+      <div class="path-row">
+        <input id="blId" type="text" placeholder="e.g. 3001" />
+        <button id="lookupBtn" class="primary">Look up colors</button>
+      </div>
+    </div>
+    <div class="actions">
+      <label class="checkline"><input type="checkbox" id="blSelectAll" /> Select all</label>
+      <button id="downloadBlBtn" class="primary" disabled>Download selected</button>
+      <span id="blSummary" class="summary"></span>
+    </div>
+    <div id="blResult" class="result"></div>
+  </section>
+
+  <section class="progress card">
+    <div class="bar-wrap"><div id="bar" class="bar"></div></div>
+    <div class="progress-row">
+      <span id="status">Idle</span>
+      <button id="cancelBtn" class="danger" disabled>Cancel</button>
+    </div>
+  </section>
+
+  <details class="log card">
+    <summary>Log</summary>
+    <pre id="logOutput"></pre>
+  </details>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
