@@ -17,10 +17,15 @@ const fs = require('fs');
  */
 
 function buildBlIndex(colors) {
+  // A BrickLink colour id can legitimately map to several Rebrickable colours
+  // (e.g. BL 77 -> "Pearl Dark Gray" and "Pearl Titanium"), so keep them all.
   const byBl = new Map();
   for (const c of colors) {
     for (const bl of c.blIds || []) {
-      byBl.set(String(bl), c);
+      const key = String(bl);
+      let arr = byBl.get(key);
+      if (!arr) byBl.set(key, (arr = []));
+      arr.push(c);
     }
   }
   return byBl;
@@ -44,16 +49,26 @@ class ColorMap {
     );
   }
 
-  /** BrickLink colour id -> Rebrickable colour id (string) or null. */
-  blToRb(blColorId) {
-    const c = this.byBl.get(String(blColorId));
-    return c ? String(c.rbId) : null;
+  /** All Rebrickable colour ids for a BrickLink colour id (may be >1). */
+  blRbIds(blColorId) {
+    return (this.byBl.get(String(blColorId)) || []).map((c) => String(c.rbId));
   }
 
-  /** BrickLink colour id -> friendly name or null. */
+  /** All Rebrickable colour names for a BrickLink colour id (may be >1). */
+  blNames(blColorId) {
+    return (this.byBl.get(String(blColorId)) || []).map((c) => c.name);
+  }
+
+  /** BrickLink colour id -> first Rebrickable colour id (string) or null. */
+  blToRb(blColorId) {
+    const ids = this.blRbIds(blColorId);
+    return ids.length ? ids[0] : null;
+  }
+
+  /** BrickLink colour id -> first friendly name or null (for display). */
   blName(blColorId) {
-    const c = this.byBl.get(String(blColorId));
-    return c ? c.name : null;
+    const names = this.blNames(blColorId);
+    return names.length ? names[0] : null;
   }
 
   get size() {

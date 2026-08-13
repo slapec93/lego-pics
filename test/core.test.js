@@ -9,7 +9,7 @@ const path = require('path');
 const { parseInventoryXml } = require('../src/core/inventory');
 const { loadElements, lookupElements } = require('../src/core/elements');
 const { ColorMap } = require('../src/core/colors');
-const { resolveInventory } = require('../src/core/resolve');
+const { resolveInventory, matchBricklinkPccs, normColor } = require('../src/core/resolve');
 const { decodeQuotedPrintable, mhtmlToHtml } = require('../src/scrape/mhtml');
 const { inventoryJobs, bricklinkJobs, slug } = require('../src/core/download');
 
@@ -63,6 +63,21 @@ test('resolveInventory ties colours + elements together', () => {
   assert.deepEqual(resolved[1].pccs, ['6614247']);
   assert.equal(unresolved.length, 1);
   assert.match(unresolved[0].reason, /no Rebrickable colour/);
+});
+
+test('matchBricklinkPccs picks PCCs by colour name (tolerant match)', () => {
+  const cm = new ColorMap([{ rbId: '1', name: 'White', blIds: ['1'] }]);
+  const rows = [
+    { colorName: 'White', pcc: '6308127' },
+    { colorName: 'white', pcc: '6581402' }, // case difference
+    { colorName: 'Black', pcc: '9999999' },
+  ];
+  const r = matchBricklinkPccs(rows, '1', cm);
+  assert.equal(r.colorName, 'White');
+  assert.deepEqual(r.pccs, ['6308127', '6581402']);
+  // unknown colour id -> nothing
+  assert.deepEqual(matchBricklinkPccs(rows, '999', cm).pccs, []);
+  assert.equal(normColor('Light Bluish Gray'), 'lightbluishgray');
 });
 
 test('quoted-printable decode', () => {

@@ -73,10 +73,11 @@ $('analyzeBtn').onclick = async () => {
   const csvPath = $('csvPath').value;
   if (!xmlPath) return alert('Pick an inventory XML first.');
   if (!csvPath) return alert('Pick elements.csv first.');
+  const useBricklink = $('useBricklink').checked;
   busy(true, 'analyze');
-  setStatus('Analyzing…');
+  setStatus(useBricklink ? 'Analyzing (with BrickLink lookup)…' : 'Analyzing…');
   try {
-    const r = await ipc.resolveInventory({ xmlPath, csvPath });
+    const r = await ipc.resolveInventory({ xmlPath, csvPath, useBricklink });
     lastResolve = r;
     renderInvResult(r);
     $('invSummary').textContent = `${r.resolved.length}/${r.itemCount} items matched · ${r.pccCount} PCC(s)`;
@@ -92,8 +93,11 @@ $('analyzeBtn').onclick = async () => {
 function renderInvResult(r) {
   const rows = [];
   for (const it of r.resolved) {
+    const tag = it.source === 'bricklink'
+      ? `<span class="tag ok">${it.pccs.length} PCC · BL</span>`
+      : `<span class="tag ok">${it.pccs.length} PCC</span>`;
     rows.push(`<tr><td>${esc(it.itemId)}</td><td>${esc(it.colorName || it.blColorId)}</td>
-      <td><span class="tag ok">${it.pccs.length} PCC</span></td><td>${esc(it.pccs.join(', '))}</td></tr>`);
+      <td>${tag}</td><td>${esc(it.pccs.join(', '))}</td></tr>`);
   }
   for (const it of r.unresolved) {
     rows.push(`<tr><td>${esc(it.itemId)}</td><td>${esc(it.blColorId)}</td>
@@ -103,15 +107,14 @@ function renderInvResult(r) {
 }
 
 $('downloadInvBtn').onclick = async () => {
-  const xmlPath = $('xmlPath').value;
-  const csvPath = $('csvPath').value;
   const outputDir = $('outputDir').value;
   if (!outputDir) return alert('Pick an output folder first.');
+  if (!lastResolve || !lastResolve.resolved.length) return alert('Analyze first.');
   const runId = 'inv-' + Date.now();
   busy(true, runId);
   setStatus('Downloading…');
   try {
-    const s = await ipc.downloadInventory({ xmlPath, csvPath, outputDir, concurrency: $('concurrency').value, runId });
+    const s = await ipc.downloadInventory({ resolved: lastResolve.resolved, outputDir, concurrency: $('concurrency').value, runId });
     setStatus(s.canceled ? `Canceled — ${s.totalSaved} images saved` : `Done — ${s.totalSaved} images across ${s.jobCount} parts (${s.totalMissing} frames absent)`);
   } catch (e) {
     alert('Download failed: ' + e.message);

@@ -52,6 +52,9 @@
     <div class="actions">
       <button id="analyzeBtn" class="primary">Analyze</button>
       <button id="downloadInvBtn" class="primary" disabled>Download</button>
+      <label class="checkline" title="For parts missing from elements.csv (e.g. printed 970c00pb… ids), scrape BrickLink and match by colour.">
+        <input type="checkbox" id="useBricklink" /> Look up unmatched parts on BrickLink
+      </label>
       <span id="invSummary" class="summary"></span>
     </div>
     <div id="invResult" class="result"></div>

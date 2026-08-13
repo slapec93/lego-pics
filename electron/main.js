@@ -7,9 +7,9 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const { parseInventoryFile } = require('../src/core/inventory');
 const { loadElements } = require('../src/core/elements');
 const { ColorMap } = require('../src/core/colors');
-const { resolveInventory } = require('../src/core/resolve');
+const { resolveInventory, matchBricklinkPccs } = require('../src/core/resolve');
 const { inventoryJobs, bricklinkJobs, runJobs } = require('../src/core/download');
-const { scrapePage } = require('./scraper');
+const { Scraper, scrapePage } = require('./scraper');
 const { extractBricklinkPccs } = require('../src/scrape/extractors');
 const config = require('./config');
 
@@ -125,22 +125,62 @@ ipcMain.handle('open:path', (_e, p) => {
 
 // ---------- IPC: inventory (mode 1) ----------
 
-ipcMain.handle('inventory:resolve', async (e, { xmlPath, csvPath }) => {
-  const items = parseInventoryFile(xmlPath);
+// Resolve unresolved items by scraping BrickLink's catalogColors for each part
+// and matching the inventory colour by name. Runs sequentially (one shared
+// scraping window) to stay gentle on BrickLink.
+async function bricklinkFallback(unresolved, colorMap, sender, signal) {
+  const stillUnresolved = [];
+  const recovered = [];
+  if (!unresolved.length) return { recovered, stillUnresolved };
+
+  const scraper = new Scraper({ log: (m) => sendLog(sender, m) });
+  try {
+    let i = 0;
+    for (const it of unresolved) {
+      if (signal?.aborted) { stillUnresolved.push(it); continue; }
+      i++;
+      const url = `https://www.bricklink.com/catalogColors.asp?itemType=P&itemNo=${encodeURIComponent(it.itemId)}&v=2`;
+      sendLog(sender, `BrickLink fallback ${i}/${unresolved.length}: ${it.itemId}`);
+      try {
+        const rows = await scraper.scrape(url, extractBricklinkPccs, { timeoutMs: 60000 });
+        const { pccs, colorName } = matchBricklinkPccs(rows, it.colorId, colorMap);
+        if (pccs.length) {
+          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, qty: it.qty, pccs, source: 'bricklink' });
+        } else {
+          stillUnresolved.push({ ...it, reason: `${it.reason}; BrickLink had no "${colorName || 'colour ' + it.colorId}" for ${it.itemId}` });
+        }
+      } catch (err) {
+        stillUnresolved.push({ ...it, reason: `${it.reason}; BrickLink lookup failed: ${err.message}` });
+      }
+    }
+  } finally {
+    scraper.destroy();
+  }
+  return { recovered, stillUnresolved };
+}
+
+async function resolveWithFallback(items, csvPath, useBricklink, sender, signal) {
   const colorMap = loadColorMap();
-  sendLog(e.sender, `Loading elements.csv …`);
   const { index, designIndex } = getElements(csvPath);
-  const { resolved, unresolved } = resolveInventory(items, colorMap, index, designIndex);
+  let { resolved, unresolved } = resolveInventory(items, colorMap, index, designIndex);
+  if (useBricklink && unresolved.length) {
+    const { recovered, stillUnresolved } = await bricklinkFallback(unresolved, colorMap, sender, signal);
+    resolved = resolved.concat(recovered);
+    unresolved = stillUnresolved;
+  }
+  return { resolved, unresolved };
+}
+
+ipcMain.handle('inventory:resolve', async (e, { xmlPath, csvPath, useBricklink }) => {
+  const items = parseInventoryFile(xmlPath);
+  sendLog(e.sender, `Loading elements.csv …`);
+  const { resolved, unresolved } = await resolveWithFallback(items, csvPath, useBricklink, e.sender);
   const pccCount = resolved.reduce((n, r) => n + r.pccs.length, 0);
   return { itemCount: items.length, resolved, unresolved, pccCount };
 });
 
-ipcMain.handle('inventory:download', async (e, { xmlPath, csvPath, outputDir, concurrency, runId }) => {
-  const items = parseInventoryFile(xmlPath);
-  const colorMap = loadColorMap();
-  const { index, designIndex } = getElements(csvPath);
-  const { resolved } = resolveInventory(items, colorMap, index, designIndex);
-  const jobs = inventoryJobs(resolved, outputDir);
+ipcMain.handle('inventory:download', async (e, { resolved, outputDir, concurrency, runId }) => {
+  const jobs = inventoryJobs(resolved || [], outputDir);
 
   const controller = new AbortController();
   runs.set(runId, controller);

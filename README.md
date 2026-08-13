@@ -67,7 +67,9 @@ npm start
 
 - Set **elements.csv** and an **output folder** (remembered between runs).
 - **From Inventory XML:** pick the `.xml`, click **Analyze** (see matched/unmatched
-  items), then **Download**.
+  items), then **Download**. Tick **Look up unmatched parts on BrickLink** to resolve
+  parts that aren't in `elements.csv` (e.g. printed `970c00pb…` ids) by scraping
+  BrickLink and matching on colour — these show a **· BL** badge.
 - **From BrickLink Part ID:** type an id (e.g. `3001`), **Look up colors**, tick the
   colours you want, **Download selected**.
 
