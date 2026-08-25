@@ -19,6 +19,9 @@ contextBridge.exposeInMainWorld('api', {
   previewBricklink: (args) => ipcRenderer.invoke('bricklink:preview', args),
   downloadBricklink: (args) => ipcRenderer.invoke('bricklink:download', args),
 
+  // generation
+  generateItem: (args) => ipcRenderer.invoke('generate:item', args),
+
   // run control
   cancelRun: (runId) => ipcRenderer.invoke('run:cancel', runId),
 

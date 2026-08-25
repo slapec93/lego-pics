@@ -63,6 +63,14 @@ function extractRebrickableColors() {
     }
     if (rbId == null) continue;
 
+    // RGB hex from the swatch cell's inline background-color.
+    let rgb = null;
+    const swatch = row.querySelector('[style*="background-color"]');
+    if (swatch) {
+      const m = (swatch.getAttribute('style') || '').match(/background-color:\s*#?([0-9a-fA-F]{6})/);
+      if (m) rgb = m[1].toUpperCase();
+    }
+
     // BrickLink id(s): prefer the dedicated column, else scan the whole row for
     // a "BrickLink" label followed by number(s).
     const blIds = [];
@@ -75,7 +83,7 @@ function extractRebrickableColors() {
       if (m) for (const num of m[1].match(/\d+/g) || []) blIds.push(num);
     }
 
-    out.push({ rbId, name: name || `color ${rbId}`, blIds });
+    out.push({ rbId, name: name || `color ${rbId}`, rgb, blIds });
   }
 
   return out.length ? out : null;

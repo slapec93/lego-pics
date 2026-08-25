@@ -22,6 +22,9 @@ function loadElements(path) {
   // variant (3069b) whose design_id is the base (3069). This lets us recover
   // those when the direct part_num lookup misses.
   const designIndex = new Map();
+  // Reverse index part_num -> [{ colorId, elementId }], used to find a "donor"
+  // photo of the same part in another colour when generating a missing colour.
+  const partIndex = new Map();
   let count = 0;
 
   // Skip header (line 0) which is: element_id,part_num,color_id,design_id
@@ -46,10 +49,36 @@ function loadElements(path) {
     if (designId && designId !== partNum) {
       addTo(designIndex, `${designId}|${colorId}`, elementId);
     }
+    let parts = partIndex.get(partNum);
+    if (!parts) partIndex.set(partNum, (parts = []));
+    parts.push({ colorId, elementId });
+    if (designId && designId !== partNum) {
+      let dparts = partIndex.get(designId);
+      if (!dparts) partIndex.set(designId, (dparts = []));
+      dparts.push({ colorId, elementId });
+    }
     count++;
   }
 
-  return { index, designIndex, size: count };
+  return { index, designIndex, partIndex, size: count };
+}
+
+/**
+ * Donor candidates for generating a missing colour of a part: other colours of
+ * the same part, neutral/light colours first (they tint most convincingly).
+ * @param {Map<string,Array<{colorId:string,elementId:string}>>} partIndex
+ * @param {string} partNum
+ * @param {string} excludeColorId Rebrickable colour id to skip (the target)
+ * @returns {Array<{colorId:string,elementId:string}>}
+ */
+function donorCandidates(partIndex, partNum, excludeColorId) {
+  const NEUTRAL_ORDER = ['15', '7', '71', '1', '9', '78']; // White, Light Gray, LBG, Grey, LtBluish, LightFlesh
+  const rank = (colorId) => {
+    const i = NEUTRAL_ORDER.indexOf(String(colorId));
+    return i < 0 ? NEUTRAL_ORDER.length : i;
+  };
+  const all = (partIndex.get(partNum) || []).filter((c) => String(c.colorId) !== String(excludeColorId));
+  return all.sort((a, b) => rank(a.colorId) - rank(b.colorId));
 }
 
 function addTo(map, key, value) {
@@ -78,4 +107,4 @@ function lookupElements(index, partNum, colorId, designIndex) {
   return [];
 }
 
-module.exports = { loadElements, lookupElements };
+module.exports = { loadElements, lookupElements, donorCandidates };

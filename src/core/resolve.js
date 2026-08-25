@@ -46,6 +46,7 @@ function resolveInventory(items, colorMap, elementIndex, designIndex) {
       rbColorId: matchedRb,
       colorName: colorMap.blName(it.colorId),
       qty: it.qty,
+      colorHex: colorMap.blRgb(it.colorId),
       pccs: sortPccsDesc(pccs), // newest-first; downloader tries newest, falls back
       pccCandidates: pccs.length,
     });

@@ -10,6 +10,8 @@ const { ColorMap } = require('../src/core/colors');
 const { resolveInventory, matchBricklinkPccs } = require('../src/core/resolve');
 const { inventoryJobs, bricklinkJobs, runJobs } = require('../src/core/download');
 const { sortPccsDesc, latestPerColor } = require('../src/core/pcc');
+const { donorCandidates } = require('../src/core/elements');
+const { generateColor } = require('../src/core/generate');
 const { Scraper, scrapePage } = require('./scraper');
 const { extractBricklinkPccs } = require('../src/scrape/extractors');
 const config = require('./config');
@@ -146,7 +148,7 @@ async function bricklinkFallback(unresolved, colorMap, sender, signal) {
         const rows = await scraper.scrape(url, extractBricklinkPccs, { timeoutMs: 60000 });
         const { pccs, colorName } = matchBricklinkPccs(rows, it.colorId, colorMap);
         if (pccs.length) {
-          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, qty: it.qty, pccs: sortPccsDesc(pccs), pccCandidates: pccs.length, source: 'bricklink' });
+          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, colorHex: colorMap.blRgb(it.colorId), qty: it.qty, pccs: sortPccsDesc(pccs), pccCandidates: pccs.length, source: 'bricklink' });
         } else {
           stillUnresolved.push({ ...it, reason: `${it.reason}; BrickLink had no "${colorName || 'colour ' + it.colorId}" for ${it.itemId}` });
         }
@@ -208,8 +210,11 @@ ipcMain.handle('bricklink:preview', async (e, { blId }) => {
     timeoutMs: 60000,
     log: (m) => sendLog(e.sender, m),
   });
-  // Collapse to one row per colour, keeping the newest (highest) PCC.
-  return { blId, rows: latestPerColor(rows || []) };
+  // Collapse to one row per colour (newest PCC first), tagging each with its RGB
+  // (for generation) so the renderer can offer to generate missing colours.
+  const colorMap = loadColorMap();
+  const grouped = latestPerColor(rows || []).map((row) => ({ ...row, hex: colorMap.rgbForName(row.colorName) }));
+  return { blId, rows: grouped, allRows: rows || [] };
 });
 
 ipcMain.handle('bricklink:download', async (e, { blId, rows, outputDir, concurrency, runId }) => {
@@ -226,6 +231,39 @@ ipcMain.handle('bricklink:download', async (e, { blId, rows, outputDir, concurre
     return { ...summary, jobCount: jobs.length, outputDir, canceled: controller.signal.aborted };
   } finally {
     runs.delete(runId);
+  }
+});
+
+// ---------- IPC: generate a missing colour from a donor photo ----------
+
+ipcMain.handle('generate:item', async (e, args) => {
+  const { partNum, colorName, targetHex, excludeColorId, donorPccs, csvPath, outputDir, runId } = args;
+  if (!outputDir) return { ok: false, error: 'no output folder set' };
+
+  let donors = donorPccs;
+  if (!donors || !donors.length) {
+    // Inventory path: derive donor candidates (same part, other colours) from
+    // the elements index, neutral colours first.
+    try {
+      const { partIndex } = getElements(csvPath);
+      donors = donorCandidates(partIndex, partNum, excludeColorId).map((c) => c.elementId);
+    } catch (err) {
+      return { ok: false, error: err.message };
+    }
+  }
+
+  const controller = new AbortController();
+  if (runId) runs.set(runId, controller);
+  sendLog(e.sender, `Generating ${partNum} · ${colorName} from a donor photo…`);
+  try {
+    return await generateColor(
+      { partNum, colorName, targetHex, donorPccs: donors, outputDir },
+      { signal: controller.signal, log: (m) => sendLog(e.sender, m) }
+    );
+  } catch (err) {
+    return { ok: false, error: err.message };
+  } finally {
+    if (runId) runs.delete(runId);
   }
 });
 

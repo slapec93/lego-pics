@@ -7,7 +7,7 @@ const os = require('os');
 const path = require('path');
 
 const { parseInventoryXml } = require('../src/core/inventory');
-const { loadElements, lookupElements } = require('../src/core/elements');
+const { loadElements, lookupElements, donorCandidates } = require('../src/core/elements');
 const { ColorMap } = require('../src/core/colors');
 const { resolveInventory, matchBricklinkPccs, normColor } = require('../src/core/resolve');
 const { decodeQuotedPrintable, mhtmlToHtml } = require('../src/scrape/mhtml');
@@ -102,16 +102,32 @@ test('mhtmlToHtml pulls the html part', () => {
   assert.match(html, /<body>hi=<\/body>/);
 });
 
-test('job builders create sane folder layout', () => {
-  const invJobs = inventoryJobs([{ itemId: '6901', colorName: 'Blue Violet', blColorId: '174', pccs: ['6584690'] }], '/out');
+test('job builders name folders by PCC and carry meta', () => {
+  const invJobs = inventoryJobs([{ itemId: '6901', colorName: 'Blue Violet', blColorId: '174', rbColorId: '1147', colorHex: 'A3A9FF', pccs: ['6584690'] }], '/out');
   assert.equal(invJobs.length, 1);
   assert.deepEqual(invJobs[0].pccs, ['6584690']);
-  assert.match(invJobs[0].outDir, /6901_Blue_Violet$/);
+  assert.equal(invJobs[0].baseName, '6901'); // folder becomes 6901_<pcc>
+  assert.equal(invJobs[0].meta.targetHex, 'A3A9FF');
+  assert.equal(invJobs[0].meta.excludeColorId, '1147');
 
-  const blJobs = bricklinkJobs('3001', [{ colorName: 'White', pcc: '300101', pccs: ['300101'] }], '/out');
-  assert.match(blJobs[0].outDir, /3001\/White$/);
-  assert.deepEqual(blJobs[0].pccs, ['300101']);
+  const blJobs = bricklinkJobs('3001', [{ colorName: 'White', pcc: '300101', pccs: ['300101'], hex: 'FFFFFF' }], '/out');
+  assert.match(blJobs[0].parentDir, /3001$/); // folder becomes 3001/<pcc>
+  assert.equal(blJobs[0].baseName, '');
+  assert.equal(blJobs[0].meta.targetHex, 'FFFFFF');
   assert.equal(slug('Trans-Clear!!'), 'Trans-Clear');
+});
+
+test('donorCandidates prefers neutral colours and excludes target', () => {
+  const partIndex = new Map([['6901', [
+    { colorId: '1147', elementId: 'TARGET' }, // excluded
+    { colorId: '5', elementId: 'RED' },
+    { colorId: '15', elementId: 'WHITE' },    // neutral -> first
+    { colorId: '71', elementId: 'LBG' },      // neutral
+  ]]]);
+  const donors = donorCandidates(partIndex, '6901', '1147').map((c) => c.elementId);
+  assert.ok(!donors.includes('TARGET'));
+  assert.equal(donors[0], 'WHITE'); // most-neutral first
+  assert.ok(donors.includes('RED'));
 });
 
 test('inventoryJobs carries candidate PCCs newest-first', () => {

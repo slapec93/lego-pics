@@ -73,11 +73,11 @@ npm start
 - **From BrickLink Part ID:** type an id (e.g. `3001`), **Look up colors**, tick the
   colours you want, **Download selected**.
 
-Output layout — one folder per part+colour, no duplicate image sets:
+Output layout — one folder per part+colour, named by the PCC actually downloaded:
 
 ```
-<output>/6901_Blue_Violet/6584690_00001.png …          # inventory mode
-<output>/3001/White/300101_00001.png …                 # bricklink mode
+<output>/6901_6584690/6584690_00001.png …              # inventory mode: <itemId>_<pcc>
+<output>/3001/300101/300101_00001.png …                # bricklink mode: <blId>/<pcc>
 ```
 
 **PCC selection & reporting.** A part+colour can have several PCCs (element ids)
@@ -86,6 +86,21 @@ photos, falling back to older PCCs only if the newest has none — so you get on
 image set, never duplicates, without missing images. Part+colour combinations
 with **no** photos on the CDN create **no folder** and are listed explicitly in
 the results (not just counted as "frames absent").
+
+## Generating missing colours
+
+Some colours were never photographed by LEGO. In the results list, each missing
+part+colour gets a **Generate** button. It finds a *donor* photo of the **same
+part in another colour** (neutral/white preferred) and recolours it to the target
+colour using the donor's shading — producing a plausible approximation.
+
+- Output goes to `<output>/<part>_<colour>_generated/` with `_generated` in every
+  filename, so generated images are never confused with real photos.
+- Works well for solid, opaque parts. It is a synthetic approximation, not an
+  official render — colour fidelity is limited by Rebrickable's swatch RGB, and
+  it is **not** suitable for printed, transparent, metallic, pearl or chrome
+  parts (those still appear in the missing list but generation will look off).
+- Pure pixel maths — no AI service, fully offline.
 
 ## Run headless (inventory only)
 
@@ -155,7 +170,8 @@ copy (a one-time manual step, needed only when LEGO adds new colours):
 
 ```
 src/core/        pure Node logic (no Electron): parse XML, index elements,
-                 colour map, resolve PCCs, download images
+                 colour map, resolve PCCs, download images, pick newest PCC,
+                 recolour donor photos + generate missing colours
 src/scrape/      browser-side extractors + MHTML decoder
 electron/        main process, preload, config, Cloudflare-free scraper (BrowserWindow)
 renderer/        GUI (HTML/CSS/JS)
