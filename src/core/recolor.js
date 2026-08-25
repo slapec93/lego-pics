@@ -23,29 +23,51 @@ function recolorToColor(pngBuffer, target, opts = {}) {
   const { data } = png;
   const [tr, tg, tb] = target;
 
+  // Normalise by the donor's OWN base luminance so the donor's colour doesn't
+  // matter: its dominant surface maps to the full target colour (a red donor no
+  // longer produces a dark result). Shadows/highlights become relative ratios.
+  const dom = dominantColor(data);
+  const refL = dom ? Math.max(0.25, luminance(dom[0], dom[1], dom[2])) : 0.9;
+
   for (let i = 0; i < data.length; i += 4) {
-    const a = data[i + 3];
-    if (a === 0) continue; // transparent background — leave it
-    const r = data[i], g = data[i + 1], b = data[i + 2];
-    // Donor luminance as a 0..1 shading map.
-    const L = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    // Multiply the target by the shading map (white donor -> target colour).
-    let nr = tr * L;
-    let ng = tg * L;
-    let nb = tb * L;
-    // Preserve bright plastic highlights by pushing them toward white.
-    if (L > 0.85) {
-      const hl = ((L - 0.85) / 0.15) * highlight;
+    if (data[i + 3] === 0) continue; // transparent background — leave it
+    const L = luminance(data[i], data[i + 1], data[i + 2]);
+    const ratio = L / refL; // 1 at the base surface, <1 shadow, >1 highlight
+    let nr = tr * ratio;
+    let ng = tg * ratio;
+    let nb = tb * ratio;
+    // Roll bright highlights toward white instead of clipping the hue.
+    if (ratio > 1) {
+      const hl = Math.min(1, ratio - 1) * highlight;
       nr = nr + (255 - nr) * hl;
       ng = ng + (255 - ng) * hl;
       nb = nb + (255 - nb) * hl;
     }
-    data[i] = Math.round(nr);
-    data[i + 1] = Math.round(ng);
-    data[i + 2] = Math.round(nb);
+    data[i] = clamp(nr);
+    data[i + 1] = clamp(ng);
+    data[i + 2] = clamp(nb);
     // alpha unchanged
   }
   return PNG.sync.write(png);
+}
+
+const luminance = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+const clamp = (v) => (v < 0 ? 0 : v > 255 ? 255 : Math.round(v));
+
+/** Most common (quantised) opaque colour in a decoded RGBA buffer. */
+function dominantColor(data) {
+  const buckets = new Map();
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 200) continue;
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    const key = `${r >> 4}|${g >> 4}|${b >> 4}`;
+    let e = buckets.get(key);
+    if (!e) buckets.set(key, (e = { n: 0, r: 0, g: 0, b: 0 }));
+    e.n++; e.r += r; e.g += g; e.b += b;
+  }
+  let best = null;
+  for (const e of buckets.values()) if (!best || e.n > best.n) best = e;
+  return best ? [best.r / best.n, best.g / best.n, best.b / best.n] : null;
 }
 
 /**
