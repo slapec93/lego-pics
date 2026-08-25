@@ -73,12 +73,19 @@ npm start
 - **From BrickLink Part ID:** type an id (e.g. `3001`), **Look up colors**, tick the
   colours you want, **Download selected**.
 
-Output layout:
+Output layout — one folder per part+colour, no duplicate image sets:
 
 ```
 <output>/6901_Blue_Violet/6584690_00001.png …          # inventory mode
-<output>/3001/White_300101/300101_00001.png …          # bricklink mode
+<output>/3001/White/300101_00001.png …                 # bricklink mode
 ```
+
+**PCC selection & reporting.** A part+colour can have several PCCs (element ids)
+across production runs. The app downloads the **newest** one that actually has
+photos, falling back to older PCCs only if the newest has none — so you get one
+image set, never duplicates, without missing images. Part+colour combinations
+with **no** photos on the CDN create **no folder** and are listed explicitly in
+the results (not just counted as "frames absent").
 
 ## Run headless (inventory only)
 

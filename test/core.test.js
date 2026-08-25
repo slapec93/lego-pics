@@ -12,6 +12,7 @@ const { ColorMap } = require('../src/core/colors');
 const { resolveInventory, matchBricklinkPccs, normColor } = require('../src/core/resolve');
 const { decodeQuotedPrintable, mhtmlToHtml } = require('../src/scrape/mhtml');
 const { inventoryJobs, bricklinkJobs, slug } = require('../src/core/download');
+const { pickLatestPcc, latestPerColor } = require('../src/core/pcc');
 
 test('parseInventoryXml extracts item id + colour', () => {
   const xml = '<INVENTORY><ITEM><ITEMID>6901</ITEMID><ITEMTYPE>P</ITEMTYPE><COLOR>174</COLOR><QTY>4</QTY></ITEM>' +
@@ -104,10 +105,30 @@ test('mhtmlToHtml pulls the html part', () => {
 test('job builders create sane folder layout', () => {
   const invJobs = inventoryJobs([{ itemId: '6901', colorName: 'Blue Violet', blColorId: '174', pccs: ['6584690'] }], '/out');
   assert.equal(invJobs.length, 1);
-  assert.equal(invJobs[0].pcc, '6584690');
+  assert.deepEqual(invJobs[0].pccs, ['6584690']);
   assert.match(invJobs[0].outDir, /6901_Blue_Violet$/);
 
-  const blJobs = bricklinkJobs('3001', [{ colorName: 'White', pcc: '300101' }], '/out');
-  assert.match(blJobs[0].outDir, /3001\/White_300101$/);
+  const blJobs = bricklinkJobs('3001', [{ colorName: 'White', pcc: '300101', pccs: ['300101'] }], '/out');
+  assert.match(blJobs[0].outDir, /3001\/White$/);
+  assert.deepEqual(blJobs[0].pccs, ['300101']);
   assert.equal(slug('Trans-Clear!!'), 'Trans-Clear');
+});
+
+test('inventoryJobs carries candidate PCCs newest-first', () => {
+  const jobs = inventoryJobs([{ itemId: '3001', colorName: 'White', pccs: ['300101', '6552094'] }], '/out');
+  assert.equal(jobs.length, 1);
+  assert.deepEqual(jobs[0].pccs, ['6552094', '300101']); // newest first, fallback second
+});
+
+test('pickLatestPcc / latestPerColor pick the newest', () => {
+  assert.equal(pickLatestPcc(['300101', '6552094', '4116259']), '6552094');
+  assert.equal(pickLatestPcc([]), null);
+  const rows = latestPerColor([
+    { colorName: 'White', pcc: '300101' },
+    { colorName: 'White', pcc: '6552094' },
+    { colorName: 'Red', pcc: '300121' },
+  ]);
+  assert.equal(rows.length, 2);
+  assert.deepEqual(rows.map((r) => `${r.colorName}:${r.pcc}`), ['White:6552094', 'Red:300121']);
+  assert.deepEqual(rows[0].pccs, ['6552094', '300101']); // all PCCs, newest-first
 });

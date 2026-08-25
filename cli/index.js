@@ -74,7 +74,11 @@ async function main() {
     concurrency,
     onProgress: (p) => process.stdout.write(`\r  ${p.done}/${p.total}  ${p.saved} imgs  ${p.label.slice(0, 40).padEnd(40)}`),
   });
-  console.log(`\n\nDone: ${summary.totalSaved} images saved, ${summary.totalMissing} frames absent.`);
+  console.log(`\n\nDone: ${summary.totalSaved} images from ${summary.partsOk}/${jobs.length} part(s).`);
+  if (summary.failed.length) {
+    console.log(`\n${summary.failed.length} combination(s) had no photos on the LEGO CDN:`);
+    for (const f of summary.failed) console.log(`  ${f.label}  (PCC ${f.pcc})`);
+  }
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

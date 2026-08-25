@@ -11,6 +11,25 @@ function setStatus(text) { $('status').textContent = text; }
 function setBar(done, total) { $('bar').style.width = total ? `${Math.round((done / total) * 100)}%` : '0%'; }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
 
+function renderDownloadResult(s) {
+  const panel = $('dlResult');
+  const parts = (s.partsOk || 0) + (s.failed ? s.failed.length : 0);
+  const title = s.canceled
+    ? `Canceled — ${s.totalSaved} images from ${s.partsOk || 0} part(s)`
+    : `Done — ${s.totalSaved} images from ${s.partsOk || 0}/${parts} part(s)`;
+  document.querySelector('.dl-title').textContent = title;
+  const failed = s.failed || [];
+  if (failed.length) {
+    const rows = failed.map((f) => `<tr><td>${esc(f.label)}</td><td>${esc(f.pcc)}</td></tr>`).join('');
+    $('dlFailed').innerHTML =
+      `<p class="fail-head">⚠ ${failed.length} part+colour combination(s) had no photos on the LEGO CDN:</p>` +
+      `<table><thead><tr><th>Part · Colour</th><th>PCC tried</th></tr></thead><tbody>${rows}</tbody></table>`;
+  } else {
+    $('dlFailed').innerHTML = `<p class="fail-head ok">✓ Every combination downloaded at least one photo.</p>`;
+  }
+  panel.classList.remove('hidden');
+}
+
 function busy(on, runId) {
   currentRunId = on ? runId : null;
   $('cancelBtn').disabled = !on;
@@ -111,11 +130,13 @@ $('downloadInvBtn').onclick = async () => {
   if (!outputDir) return alert('Pick an output folder first.');
   if (!lastResolve || !lastResolve.resolved.length) return alert('Analyze first.');
   const runId = 'inv-' + Date.now();
+  $('dlResult').classList.add('hidden');
   busy(true, runId);
   setStatus('Downloading…');
   try {
     const s = await ipc.downloadInventory({ resolved: lastResolve.resolved, outputDir, concurrency: $('concurrency').value, runId });
-    setStatus(s.canceled ? `Canceled — ${s.totalSaved} images saved` : `Done — ${s.totalSaved} images across ${s.jobCount} parts (${s.totalMissing} frames absent)`);
+    renderDownloadResult(s);
+    setStatus(s.canceled ? 'Canceled' : `Done — ${s.totalSaved} images, ${s.failed.length} combo(s) with no photos`);
   } catch (e) {
     alert('Download failed: ' + e.message);
     setStatus('Failed');
@@ -164,11 +185,13 @@ $('downloadBlBtn').onclick = async () => {
     .filter((c) => c.checked).map((c) => blRows[Number(c.dataset.i)]);
   if (!selected.length) return alert('Select at least one colour.');
   const runId = 'bl-' + Date.now();
+  $('dlResult').classList.add('hidden');
   busy(true, runId);
   setStatus('Downloading…');
   try {
     const s = await ipc.downloadBricklink({ blId: $('blId').value.trim(), rows: selected, outputDir, concurrency: $('concurrency').value, runId });
-    setStatus(s.canceled ? `Canceled — ${s.totalSaved} images saved` : `Done — ${s.totalSaved} images across ${s.jobCount} colours (${s.totalMissing} frames absent)`);
+    renderDownloadResult(s);
+    setStatus(s.canceled ? 'Canceled' : `Done — ${s.totalSaved} images, ${s.failed.length} combo(s) with no photos`);
   } catch (e) {
     alert('Download failed: ' + e.message);
     setStatus('Failed');

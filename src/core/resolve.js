@@ -1,6 +1,7 @@
 'use strict';
 
 const { lookupElements } = require('./elements');
+const { sortPccsDesc } = require('./pcc');
 
 /**
  * Resolve an inventory (list of {itemId, colorId(BrickLink)}) into PCC candidates
@@ -45,7 +46,8 @@ function resolveInventory(items, colorMap, elementIndex, designIndex) {
       rbColorId: matchedRb,
       colorName: colorMap.blName(it.colorId),
       qty: it.qty,
-      pccs,
+      pccs: sortPccsDesc(pccs), // newest-first; downloader tries newest, falls back
+      pccCandidates: pccs.length,
     });
   }
 

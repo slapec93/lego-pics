@@ -32,7 +32,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  */
 async function downloadPccImages(pcc, outDir, opts = {}) {
   const { frames = 8, maxRetries = 4, jitterMs = 120, log = () => {}, signal } = opts;
-  fs.mkdirSync(outDir, { recursive: true });
+
+  // Create the folder lazily, only when we actually have an image to write, so a
+  // part+colour with no photos leaves no empty folder behind.
+  let folderReady = false;
+  const ensureFolder = () => {
+    if (!folderReady) { fs.mkdirSync(outDir, { recursive: true }); folderReady = true; }
+  };
 
   const saved = [];
   const missing = [];
@@ -82,6 +88,7 @@ async function downloadPccImages(pcc, outDir, opts = {}) {
         }
 
         const buf = Buffer.from(await res.arrayBuffer());
+        ensureFolder();
         const file = path.join(outDir, `${pcc}_0000${n}.png`);
         fs.writeFileSync(file, buf);
         saved.push(file);

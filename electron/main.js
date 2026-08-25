@@ -9,6 +9,7 @@ const { loadElements } = require('../src/core/elements');
 const { ColorMap } = require('../src/core/colors');
 const { resolveInventory, matchBricklinkPccs } = require('../src/core/resolve');
 const { inventoryJobs, bricklinkJobs, runJobs } = require('../src/core/download');
+const { sortPccsDesc, latestPerColor } = require('../src/core/pcc');
 const { Scraper, scrapePage } = require('./scraper');
 const { extractBricklinkPccs } = require('../src/scrape/extractors');
 const config = require('./config');
@@ -145,7 +146,7 @@ async function bricklinkFallback(unresolved, colorMap, sender, signal) {
         const rows = await scraper.scrape(url, extractBricklinkPccs, { timeoutMs: 60000 });
         const { pccs, colorName } = matchBricklinkPccs(rows, it.colorId, colorMap);
         if (pccs.length) {
-          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, qty: it.qty, pccs, source: 'bricklink' });
+          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, qty: it.qty, pccs: sortPccsDesc(pccs), pccCandidates: pccs.length, source: 'bricklink' });
         } else {
           stillUnresolved.push({ ...it, reason: `${it.reason}; BrickLink had no "${colorName || 'colour ' + it.colorId}" for ${it.itemId}` });
         }
@@ -207,7 +208,8 @@ ipcMain.handle('bricklink:preview', async (e, { blId }) => {
     timeoutMs: 60000,
     log: (m) => sendLog(e.sender, m),
   });
-  return { blId, rows: rows || [] };
+  // Collapse to one row per colour, keeping the newest (highest) PCC.
+  return { blId, rows: latestPerColor(rows || []) };
 });
 
 ipcMain.handle('bricklink:download', async (e, { blId, rows, outputDir, concurrency, runId }) => {

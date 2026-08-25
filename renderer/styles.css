@@ -89,3 +89,10 @@ button.danger { border-color: var(--err); color: var(--err); }
   white-space: pre-wrap;
 }
 .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--border); vertical-align: middle; margin-right: 6px; }
+.dl-title { margin: 0 0 10px; font-size: 15px; }
+.fail-head { margin: 0 0 8px; color: var(--err); font-size: 13px; }
+.fail-head.ok { color: var(--ok); }
+#dlFailed table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+#dlFailed th, #dlFailed td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--border); }
+#dlFailed th { color: var(--muted); }
+#dlResult { max-height: 320px; overflow: auto; }
