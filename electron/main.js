@@ -11,7 +11,7 @@ const { resolveInventory, matchBricklinkPccs } = require('../src/core/resolve');
 const { inventoryJobs, bricklinkJobs, runJobs } = require('../src/core/download');
 const { sortPccsDesc, latestPerColor } = require('../src/core/pcc');
 const { donorCandidates } = require('../src/core/elements');
-const { generateColor } = require('../src/core/generate');
+const { generateColor, baseItemNo } = require('../src/core/generate');
 const { Scraper, scrapePage } = require('./scraper');
 const { extractBricklinkPccs } = require('../src/scrape/extractors');
 const config = require('./config');
@@ -236,28 +236,51 @@ ipcMain.handle('bricklink:download', async (e, { blId, rows, outputDir, concurre
 
 // ---------- IPC: generate a missing colour from a donor photo ----------
 
-ipcMain.handle('generate:item', async (e, args) => {
-  const { partNum, colorName, targetHex, excludeColorId, donorPccs, csvPath, outputDir, runId } = args;
-  if (!outputDir) return { ok: false, error: 'no output folder set' };
+// Scrape BrickLink catalogColors for a part and return its other colours' PCCs
+// (newest-first), excluding the target colour name — used as donor spins.
+async function bricklinkDonors(itemNo, excludeColorName, sender) {
+  const url = `https://www.bricklink.com/catalogColors.asp?itemType=P&itemNo=${encodeURIComponent(itemNo)}&v=2`;
+  const rows = await scrapePage(url, extractBricklinkPccs, { timeoutMs: 60000, log: (m) => sendLog(sender, m) });
+  const grouped = latestPerColor(rows || []);
+  const ex = String(excludeColorName || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const isNeutral = (n) => /^(white|lightgray|lightbluishgray|verylightgray|tan)$/.test(String(n).toLowerCase().replace(/[^a-z0-9]+/g, ''));
+  return grouped
+    .filter((g) => String(g.colorName).toLowerCase().replace(/[^a-z0-9]+/g, '') !== ex)
+    .sort((a, b) => (isNeutral(a.colorName) ? 0 : 1) - (isNeutral(b.colorName) ? 0 : 1))
+    .flatMap((g) => g.pccs || [g.pcc]);
+}
 
-  let donors = donorPccs;
-  if (!donors || !donors.length) {
-    // Inventory path: derive donor candidates (same part, other colours) from
-    // the elements index, neutral colours first.
-    try {
-      const { partIndex } = getElements(csvPath);
-      donors = donorCandidates(partIndex, partNum, excludeColorId).map((c) => c.elementId);
-    } catch (err) {
-      return { ok: false, error: err.message };
-    }
-  }
+ipcMain.handle('generate:item', async (e, args) => {
+  const { partNum, colorName, targetHex, excludeColorId, blColorId, donorPccs, csvPath, outputDir, runId } = args;
+  if (!outputDir) return { ok: false, error: 'no output folder set' };
 
   const controller = new AbortController();
   if (runId) runs.set(runId, controller);
-  sendLog(e.sender, `Generating ${partNum} · ${colorName} from a donor photo…`);
+  sendLog(e.sender, `Generating ${partNum} · ${colorName}…`);
   try {
+    // Donor cascade: caller-provided → same part (elements.csv) → same part
+    // (BrickLink) → base mould (strip print suffix, BrickLink).
+    let donors = donorPccs && donorPccs.length ? donorPccs : [];
+    if (!donors.length) {
+      try {
+        const { partIndex } = getElements(csvPath);
+        donors = donorCandidates(partIndex, partNum, excludeColorId).map((c) => c.elementId);
+      } catch { /* not in elements.csv */ }
+    }
+    if (!donors.length) {
+      sendLog(e.sender, `Looking up other colours of ${partNum} on BrickLink…`);
+      donors = await bricklinkDonors(partNum, colorName, e.sender);
+    }
+    if (!donors.length) {
+      const base = baseItemNo(partNum);
+      if (base) {
+        sendLog(e.sender, `No other colour of ${partNum}; using base mould ${base} as donor…`);
+        donors = await bricklinkDonors(base, null, e.sender);
+      }
+    }
+
     return await generateColor(
-      { partNum, colorName, targetHex, donorPccs: donors, outputDir },
+      { partNum, colorName, blItemNo: partNum, blColorId, targetHex, donorPccs: donors, outputDir },
       { signal: controller.signal, log: (m) => sendLog(e.sender, m) }
     );
   } catch (err) {

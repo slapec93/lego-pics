@@ -89,18 +89,30 @@ the results (not just counted as "frames absent").
 
 ## Generating missing colours
 
-Some colours were never photographed by LEGO. In the results list, each missing
-part+colour gets a **Generate** button. It finds a *donor* photo of the **same
-part in another colour** (neutral/white preferred) and recolours it to the target
-colour using the donor's shading — producing a plausible approximation.
+Some colours were never photographed by LEGO. Since we need **8 angles** and the
+only 8-angle source is the spin carousel, the only way to fill a gap is to
+**recolour a donor that has its own 8-angle spin**. In the results list, each
+missing part+colour gets a **Generate** button that does this:
 
-- Output goes to `<output>/<part>_<colour>_generated/` with `_generated` in every
-  filename, so generated images are never confused with real photos.
-- Works well for solid, opaque parts. It is a synthetic approximation, not an
-  official render — colour fidelity is limited by Rebrickable's swatch RGB, and
-  it is **not** suitable for printed, transparent, metallic, pearl or chrome
-  parts (those still appear in the missing list but generation will look off).
-- Pure pixel maths — no AI service, fully offline.
+1. **Hero image** — fetches the real BrickLink photo for that exact part+colour
+   (`img.bricklink.com/ItemImage/PN/<blColorId>/<itemNo>.png`). For printed parts
+   this is the only image with the correct decoration.
+2. **True colour** — samples the dominant plastic colour from that BrickLink photo
+   (more accurate than a swatch RGB), falling back to the Rebrickable swatch.
+3. **Donor spin** — finds an 8-angle spin to recolour, trying in order:
+   same part in another colour (from `elements.csv`), then same part on BrickLink,
+   then the **base mould** (print suffix stripped, e.g. `970c00pb1273` → `970c00`).
+4. **Recolour** — tints the donor's 8 frames to the sampled colour.
+
+Output goes to `<output>/<part>_<colour>_generated/`:
+- `<itemNo>_hero_bricklink.png` — the real BrickLink photo (correct print + colour).
+- `<donorPcc>_0000n_generated.png` — the 8 recoloured spin angles.
+
+`_generated` in every recoloured filename (and the `_generated` folder) marks
+these as synthetic. Caveats: the recoloured angles show the base mould, so for
+**printed** parts only the hero image carries the decoration; transparent /
+metallic / pearl / chrome finishes won't recolour convincingly. Pure pixel maths —
+no AI service, fully offline.
 
 ## Run headless (inventory only)
 

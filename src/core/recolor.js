@@ -71,9 +71,41 @@ function markGenerated(pngBuffer, opts = {}) {
   return PNG.sync.write(png);
 }
 
+/**
+ * Sample the dominant plastic colour of a part from a product image (e.g. a
+ * BrickLink photo), ignoring the background and near-black/near-white pixels and
+ * any printed decoration (which is a minority of pixels). Returns [r,g,b].
+ * Used to recolour a donor to the *true* photographed colour rather than a
+ * swatch approximation.
+ * @param {Buffer} pngBuffer
+ * @returns {[number,number,number]|null}
+ */
+function sampleDominantColor(pngBuffer) {
+  const png = PNG.sync.read(pngBuffer);
+  const { data } = png;
+  const buckets = new Map();
+  for (let i = 0; i < data.length; i += 4) {
+    const a = data[i + 3];
+    if (a < 200) continue; // background / edges
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+    if (mx > 240 && mn > 225) continue; // near-white background
+    if (mx < 30) continue;              // near-black shadow
+    // Quantise to 24 levels/channel and count.
+    const key = `${r >> 4}|${g >> 4}|${b >> 4}`;
+    let e = buckets.get(key);
+    if (!e) buckets.set(key, (e = { n: 0, r: 0, g: 0, b: 0 }));
+    e.n++; e.r += r; e.g += g; e.b += b;
+  }
+  let best = null;
+  for (const e of buckets.values()) if (!best || e.n > best.n) best = e;
+  if (!best) return null;
+  return [Math.round(best.r / best.n), Math.round(best.g / best.n), Math.round(best.b / best.n)];
+}
+
 function hexToRgb(hex) {
   const h = String(hex).replace('#', '');
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
 
-module.exports = { recolorToColor, markGenerated, hexToRgb };
+module.exports = { recolorToColor, markGenerated, hexToRgb, sampleDominantColor };

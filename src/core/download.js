@@ -44,6 +44,7 @@ function inventoryJobs(resolved, outputDir) {
         colorName: color,
         targetHex: r.colorHex || null,
         excludeColorId: r.rbColorId || null,
+        blColorId: r.blColorId || null,
         source: r.source || 'csv',
       },
     });

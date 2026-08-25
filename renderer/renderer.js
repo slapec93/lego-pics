@@ -29,10 +29,10 @@ function renderDownloadResult(s) {
   lastFailed = s.failed || [];
   if (lastFailed.length) {
     const rows = lastFailed.map((f, i) => {
-      const canGen = !!(f.meta && f.meta.targetHex);
+      const canGen = !!(f.meta && (f.meta.targetHex || f.meta.blColorId || f.meta.donorPool));
       const btn = canGen
         ? `<button class="genBtn" data-i="${i}">Generate</button>`
-        : `<span class="muted" title="No colour RGB known — can't generate">—</span>`;
+        : `<span class="muted" title="Not enough info to generate">—</span>`;
       return `<tr><td>${esc(f.label)}</td><td>${esc(f.pcc)}</td><td class="gen-cell" id="gencell-${i}">${btn}</td></tr>`;
     }).join('');
     $('dlFailed').innerHTML =
@@ -66,13 +66,15 @@ async function onGenerate(i, btn) {
       colorName: meta.colorName,
       targetHex: meta.targetHex,
       excludeColorId: meta.excludeColorId,
+      blColorId: meta.blColorId,
       donorPccs,
       csvPath: $('csvPath').value,
       outputDir: $('outputDir').value,
       runId: 'gen-' + Date.now(),
     });
     if (res.ok) {
-      cell.innerHTML = `<span class="tag ok">✓ ${res.saved} generated</span> <button class="openGen" data-p="${esc(res.outDir)}">open</button>`;
+      const detail = res.hero ? `${res.donorFrames}+hero` : `${res.saved}`;
+      cell.innerHTML = `<span class="tag ok">✓ ${detail} imgs</span> <button class="openGen" data-p="${esc(res.outDir)}">open</button>`;
     } else {
       cell.innerHTML = `<span class="muted" title="${esc(res.error)}">✗ ${esc(res.error)}</span> <button class="genBtn" data-i="${i}">retry</button>`;
       cell.querySelector('.genBtn').onclick = (ev) => onGenerate(i, ev.target);
