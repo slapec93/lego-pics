@@ -71,22 +71,6 @@ class ColorMap {
     return names.length ? names[0] : null;
   }
 
-  /** BrickLink colour id -> RGB hex (e.g. "A3A9FF") or null. */
-  blRgb(blColorId) {
-    const arr = this.byBl.get(String(blColorId)) || [];
-    for (const c of arr) if (c.rgb) return c.rgb;
-    return null;
-  }
-
-  /** Colour name -> RGB hex or null (used for BrickLink-scraped colour names). */
-  rgbForName(name) {
-    const norm = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-    for (const c of this.colors) {
-      if (c.rgb && String(c.name).toLowerCase().replace(/[^a-z0-9]+/g, '') === norm) return c.rgb;
-    }
-    return null;
-  }
-
   get size() {
     return this.colors.length;
   }

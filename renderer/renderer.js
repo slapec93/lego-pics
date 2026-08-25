@@ -11,14 +11,6 @@ function setStatus(text) { $('status').textContent = text; }
 function setBar(done, total) { $('bar').style.width = total ? `${Math.round((done / total) * 100)}%` : '0%'; }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
 
-let lastFailed = [];
-
-const NEUTRAL = ['white', 'light gray', 'light bluish gray', 'very light gray', 'light bluish grey', 'tan'];
-function neutralFirst(a, b) {
-  const s = (n) => (NEUTRAL.includes(String(n).toLowerCase()) ? 0 : 1);
-  return s(a.colorName) - s(b.colorName);
-}
-
 function renderDownloadResult(s) {
   const panel = $('dlResult');
   const parts = (s.partsOk || 0) + (s.failed ? s.failed.length : 0);
@@ -26,64 +18,16 @@ function renderDownloadResult(s) {
     ? `Canceled — ${s.totalSaved} images from ${s.partsOk || 0} part(s)`
     : `Done — ${s.totalSaved} images from ${s.partsOk || 0}/${parts} part(s)`;
   document.querySelector('.dl-title').textContent = title;
-  lastFailed = s.failed || [];
-  if (lastFailed.length) {
-    const rows = lastFailed.map((f, i) => {
-      const canGen = !!(f.meta && (f.meta.targetHex || f.meta.blColorId || f.meta.donorPool));
-      const btn = canGen
-        ? `<button class="genBtn" data-i="${i}">Generate</button>`
-        : `<span class="muted" title="Not enough info to generate">—</span>`;
-      return `<tr><td>${esc(f.label)}</td><td>${esc(f.pcc)}</td><td class="gen-cell" id="gencell-${i}">${btn}</td></tr>`;
-    }).join('');
+  const failed = s.failed || [];
+  if (failed.length) {
+    const rows = failed.map((f) => `<tr><td>${esc(f.label)}</td><td>${esc(f.pcc)}</td></tr>`).join('');
     $('dlFailed').innerHTML =
-      `<p class="fail-head">⚠ ${lastFailed.length} part+colour combination(s) had no photos on the LEGO CDN. ` +
-      `You can generate a marked approximation from another colour of the same part:</p>` +
-      `<table><thead><tr><th>Part · Colour</th><th>PCC tried</th><th>Missing photo</th></tr></thead><tbody>${rows}</tbody></table>`;
-    document.querySelectorAll('.genBtn').forEach((b) => { b.onclick = () => onGenerate(Number(b.dataset.i), b); });
+      `<p class="fail-head">⚠ ${failed.length} part+colour combination(s) had no photos on the LEGO CDN:</p>` +
+      `<table><thead><tr><th>Part · Colour</th><th>PCC tried</th></tr></thead><tbody>${rows}</tbody></table>`;
   } else {
     $('dlFailed').innerHTML = `<p class="fail-head ok">✓ Every combination downloaded at least one photo.</p>`;
   }
   panel.classList.remove('hidden');
-}
-
-async function onGenerate(i, btn) {
-  const f = lastFailed[i];
-  const meta = f.meta || {};
-  const cell = $('gencell-' + i);
-  btn.disabled = true;
-  cell.innerHTML = 'Generating…';
-  // For BrickLink mode, donors are the other colours we just scraped.
-  let donorPccs;
-  if (meta.donorPool) {
-    donorPccs = (blRows || [])
-      .filter((r) => r.colorName !== meta.colorName)
-      .sort(neutralFirst)
-      .flatMap((r) => (r.pccs && r.pccs.length ? r.pccs : [r.pcc]));
-  }
-  try {
-    const res = await ipc.generateItem({
-      partNum: meta.partNum,
-      colorName: meta.colorName,
-      targetHex: meta.targetHex,
-      excludeColorId: meta.excludeColorId,
-      blColorId: meta.blColorId,
-      donorPccs,
-      csvPath: $('csvPath').value,
-      outputDir: $('outputDir').value,
-      runId: 'gen-' + Date.now(),
-    });
-    if (res.ok) {
-      const detail = res.hero ? `${res.donorFrames}+hero` : `${res.saved}`;
-      cell.innerHTML = `<span class="tag ok">✓ ${detail} imgs</span> <button class="openGen" data-p="${esc(res.outDir)}">open</button>`;
-    } else {
-      cell.innerHTML = `<span class="muted" title="${esc(res.error)}">✗ ${esc(res.error)}</span> <button class="genBtn" data-i="${i}">retry</button>`;
-      cell.querySelector('.genBtn').onclick = (ev) => onGenerate(i, ev.target);
-    }
-  } catch (e) {
-    cell.innerHTML = `<span class="muted">✗ ${esc(e.message)}</span>`;
-  }
-  const open = cell.querySelector('.openGen');
-  if (open) open.onclick = () => ipc.openPath(open.dataset.p);
 }
 
 function busy(on, runId) {

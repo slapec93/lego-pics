@@ -39,14 +39,6 @@ function inventoryJobs(resolved, outputDir) {
       parentDir: outputDir,
       baseName: slug(r.itemId),
       label: `${r.itemId} · ${color}`,
-      meta: {
-        partNum: r.itemId,
-        colorName: color,
-        targetHex: r.colorHex || null,
-        excludeColorId: r.rbColorId || null,
-        blColorId: r.blColorId || null,
-        source: r.source || 'csv',
-      },
     });
   }
   return jobs;
@@ -66,12 +58,6 @@ function bricklinkJobs(blId, pccRows, outputDir) {
     parentDir: base,
     baseName: '', // folder is just the PCC
     label: `${blId} · ${row.colorName}`,
-    meta: {
-      partNum: blId,
-      colorName: row.colorName,
-      targetHex: row.hex || null,
-      donorPool: true, // donors come from the other scraped colours
-    },
   }));
 }
 
@@ -106,7 +92,7 @@ async function runJobs(jobs, opts = {}) {
     totalSaved += saved.length;
     totalMissing += missing.length;
     if (chosen) partsOk++;
-    else failed.push({ label: job.label, pcc: job.pccs.join('/'), meta: job.meta });
+    else failed.push({ label: job.label, pcc: job.pccs.join('/') });
     onProgress({ done, total: jobs.length, label: job.label, saved: saved.length, missing: missing.length });
     return { ...job, pcc: chosen, saved, missing };
   });

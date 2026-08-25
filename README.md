@@ -87,37 +87,6 @@ image set, never duplicates, without missing images. Part+colour combinations
 with **no** photos on the CDN create **no folder** and are listed explicitly in
 the results (not just counted as "frames absent").
 
-## Generating missing colours
-
-Some colours were never photographed by LEGO. Since we need **8 angles** and the
-only 8-angle source is the spin carousel, the only way to fill a gap is to
-**recolour a donor that has its own 8-angle spin**. In the results list, each
-missing part+colour gets a **Generate** button that does this:
-
-1. **Hero image** — fetches the real BrickLink photo for that exact part+colour
-   (`img.bricklink.com/ItemImage/PN/<blColorId>/<itemNo>.png`). For printed parts
-   this is the only image with the correct decoration.
-2. **True colour** — samples the dominant plastic colour from that BrickLink photo
-   (more accurate than a swatch RGB), falling back to the Rebrickable swatch.
-3. **Donor spin** — finds an 8-angle spin to recolour, trying in order:
-   same part in another colour (from `elements.csv`), then same part on BrickLink,
-   then the **base mould** (print suffix stripped, e.g. `970c00pb1273` → `970c00`).
-4. **Recolour** — tints the donor's 8 frames to the sampled colour, normalising by
-   the donor's own luminance so any donor colour maps correctly.
-5. **Estimate the print** — for printed parts, the decoration is extracted from the
-   BrickLink photo and projected onto each recoloured angle (the donor is the same
-   mould, so the geometry matches). This is an *estimate*, not a true render — a
-   bounding-box projection, so it's softer/approximate on the more rotated angles.
-
-Output goes to `<output>/<part>_<colour>_generated/`:
-- `<itemNo>_hero_bricklink.png` — the real BrickLink photo (accurate print + colour).
-- `<donorPcc>_0000n_generated.png` — the 8 estimated spin angles.
-
-`_generated` in every filename (and the `_generated` folder) marks these as
-synthetic. Caveats: the print estimate is approximate on rotated angles; the hero
-image is the accurate reference. Transparent / metallic / pearl / chrome finishes
-won't recolour convincingly. Pure pixel maths — no AI service, fully offline.
-
 ## Run headless (inventory only)
 
 ```bash

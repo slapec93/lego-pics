@@ -10,8 +10,6 @@ const { ColorMap } = require('../src/core/colors');
 const { resolveInventory, matchBricklinkPccs } = require('../src/core/resolve');
 const { inventoryJobs, bricklinkJobs, runJobs } = require('../src/core/download');
 const { sortPccsDesc, latestPerColor } = require('../src/core/pcc');
-const { donorCandidates } = require('../src/core/elements');
-const { generateColor, baseItemNo } = require('../src/core/generate');
 const { Scraper, scrapePage } = require('./scraper');
 const { extractBricklinkPccs } = require('../src/scrape/extractors');
 const config = require('./config');
@@ -148,7 +146,7 @@ async function bricklinkFallback(unresolved, colorMap, sender, signal) {
         const rows = await scraper.scrape(url, extractBricklinkPccs, { timeoutMs: 60000 });
         const { pccs, colorName } = matchBricklinkPccs(rows, it.colorId, colorMap);
         if (pccs.length) {
-          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, colorHex: colorMap.blRgb(it.colorId), qty: it.qty, pccs: sortPccsDesc(pccs), pccCandidates: pccs.length, source: 'bricklink' });
+          recovered.push({ itemId: it.itemId, blColorId: it.colorId, rbColorId: it.rbColorId || null, colorName, qty: it.qty, pccs: sortPccsDesc(pccs), pccCandidates: pccs.length, source: 'bricklink' });
         } else {
           stillUnresolved.push({ ...it, reason: `${it.reason}; BrickLink had no "${colorName || 'colour ' + it.colorId}" for ${it.itemId}` });
         }
@@ -210,11 +208,8 @@ ipcMain.handle('bricklink:preview', async (e, { blId }) => {
     timeoutMs: 60000,
     log: (m) => sendLog(e.sender, m),
   });
-  // Collapse to one row per colour (newest PCC first), tagging each with its RGB
-  // (for generation) so the renderer can offer to generate missing colours.
-  const colorMap = loadColorMap();
-  const grouped = latestPerColor(rows || []).map((row) => ({ ...row, hex: colorMap.rgbForName(row.colorName) }));
-  return { blId, rows: grouped, allRows: rows || [] };
+  // Collapse to one row per colour, keeping the newest (highest) PCC.
+  return { blId, rows: latestPerColor(rows || []) };
 });
 
 ipcMain.handle('bricklink:download', async (e, { blId, rows, outputDir, concurrency, runId }) => {
@@ -231,62 +226,6 @@ ipcMain.handle('bricklink:download', async (e, { blId, rows, outputDir, concurre
     return { ...summary, jobCount: jobs.length, outputDir, canceled: controller.signal.aborted };
   } finally {
     runs.delete(runId);
-  }
-});
-
-// ---------- IPC: generate a missing colour from a donor photo ----------
-
-// Scrape BrickLink catalogColors for a part and return its other colours' PCCs
-// (newest-first), excluding the target colour name — used as donor spins.
-async function bricklinkDonors(itemNo, excludeColorName, sender) {
-  const url = `https://www.bricklink.com/catalogColors.asp?itemType=P&itemNo=${encodeURIComponent(itemNo)}&v=2`;
-  const rows = await scrapePage(url, extractBricklinkPccs, { timeoutMs: 60000, log: (m) => sendLog(sender, m) });
-  const grouped = latestPerColor(rows || []);
-  const ex = String(excludeColorName || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-  const isNeutral = (n) => /^(white|lightgray|lightbluishgray|verylightgray|tan)$/.test(String(n).toLowerCase().replace(/[^a-z0-9]+/g, ''));
-  return grouped
-    .filter((g) => String(g.colorName).toLowerCase().replace(/[^a-z0-9]+/g, '') !== ex)
-    .sort((a, b) => (isNeutral(a.colorName) ? 0 : 1) - (isNeutral(b.colorName) ? 0 : 1))
-    .flatMap((g) => g.pccs || [g.pcc]);
-}
-
-ipcMain.handle('generate:item', async (e, args) => {
-  const { partNum, colorName, targetHex, excludeColorId, blColorId, donorPccs, csvPath, outputDir, runId } = args;
-  if (!outputDir) return { ok: false, error: 'no output folder set' };
-
-  const controller = new AbortController();
-  if (runId) runs.set(runId, controller);
-  sendLog(e.sender, `Generating ${partNum} · ${colorName}…`);
-  try {
-    // Donor cascade: caller-provided → same part (elements.csv) → same part
-    // (BrickLink) → base mould (strip print suffix, BrickLink).
-    let donors = donorPccs && donorPccs.length ? donorPccs : [];
-    if (!donors.length) {
-      try {
-        const { partIndex } = getElements(csvPath);
-        donors = donorCandidates(partIndex, partNum, excludeColorId).map((c) => c.elementId);
-      } catch { /* not in elements.csv */ }
-    }
-    if (!donors.length) {
-      sendLog(e.sender, `Looking up other colours of ${partNum} on BrickLink…`);
-      donors = await bricklinkDonors(partNum, colorName, e.sender);
-    }
-    if (!donors.length) {
-      const base = baseItemNo(partNum);
-      if (base) {
-        sendLog(e.sender, `No other colour of ${partNum}; using base mould ${base} as donor…`);
-        donors = await bricklinkDonors(base, null, e.sender);
-      }
-    }
-
-    return await generateColor(
-      { partNum, colorName, blItemNo: partNum, blColorId, targetHex, donorPccs: donors, outputDir },
-      { signal: controller.signal, log: (m) => sendLog(e.sender, m) }
-    );
-  } catch (err) {
-    return { ok: false, error: err.message };
-  } finally {
-    if (runId) runs.delete(runId);
   }
 });
 
