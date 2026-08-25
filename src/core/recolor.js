@@ -18,11 +18,15 @@ const { PNG } = require('pngjs');
  * @returns {Buffer} recoloured PNG
  */
 function recolorToColor(pngBuffer, target, opts = {}) {
-  const { highlight = 0.6 } = opts;
   const png = PNG.sync.read(pngBuffer);
-  const { data } = png;
-  const [tr, tg, tb] = target;
+  recolorData(png.data, target, opts);
+  return PNG.sync.write(png);
+}
 
+/** In-place recolour of a decoded RGBA buffer (see recolorToColor). */
+function recolorData(data, target, opts = {}) {
+  const { highlight = 0.6 } = opts;
+  const [tr, tg, tb] = target;
   // Normalise by the donor's OWN base luminance so the donor's colour doesn't
   // matter: its dominant surface maps to the full target colour (a red donor no
   // longer produces a dark result). Shadows/highlights become relative ratios.
@@ -33,23 +37,84 @@ function recolorToColor(pngBuffer, target, opts = {}) {
     if (data[i + 3] === 0) continue; // transparent background — leave it
     const L = luminance(data[i], data[i + 1], data[i + 2]);
     const ratio = L / refL; // 1 at the base surface, <1 shadow, >1 highlight
-    let nr = tr * ratio;
-    let ng = tg * ratio;
-    let nb = tb * ratio;
-    // Roll bright highlights toward white instead of clipping the hue.
+    let nr = tr * ratio, ng = tg * ratio, nb = tb * ratio;
     if (ratio > 1) {
       const hl = Math.min(1, ratio - 1) * highlight;
-      nr = nr + (255 - nr) * hl;
-      ng = ng + (255 - ng) * hl;
-      nb = nb + (255 - nb) * hl;
+      nr += (255 - nr) * hl; ng += (255 - ng) * hl; nb += (255 - nb) * hl;
     }
-    data[i] = clamp(nr);
-    data[i + 1] = clamp(ng);
-    data[i + 2] = clamp(nb);
-    // alpha unchanged
+    data[i] = clamp(nr); data[i + 1] = clamp(ng); data[i + 2] = clamp(nb);
   }
-  return PNG.sync.write(png);
 }
+
+/**
+ * Extract the printed decoration from a BrickLink product photo (white
+ * background): the part's non-background pixels whose colour differs from the
+ * dominant base plastic colour. Returned cropped to the part's bounding box.
+ * @param {Buffer} blBuffer
+ * @returns {{w:number,h:number,data:Buffer,base:[number,number,number],coverage:number}|null}
+ */
+function extractPrintLayer(blBuffer, opts = {}) {
+  const { threshold = 42 } = opts;
+  const png = PNG.sync.read(blBuffer);
+  const { width: W, height: H, data } = png;
+  const base = dominantColor(data);
+  if (!base) return null;
+  const isBg = (r, g, b, a) => a < 40 || (Math.max(r, g, b) > 238 && Math.min(r, g, b) > 222);
+  let x0 = W, y0 = H, x1 = 0, y1 = 0, part = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4;
+    if (isBg(data[i], data[i + 1], data[i + 2], data[i + 3])) continue;
+    part++;
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  if (part === 0) return null;
+  const w = x1 - x0 + 1, h = y1 - y0 + 1;
+  const out = Buffer.alloc(w * h * 4, 0);
+  let printPx = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = ((y + y0) * W + (x + x0)) * 4;
+    const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
+    if (isBg(r, g, b, a)) continue;
+    if (colorDist(r, g, b, base) > threshold) {
+      const j = (y * w + x) * 4;
+      out[j] = r; out[j + 1] = g; out[j + 2] = b; out[j + 3] = 255;
+      printPx++;
+    }
+  }
+  return { w, h, data: out, base: base.map(Math.round), coverage: printPx / part };
+}
+
+/**
+ * Estimate the print on a recoloured donor frame by mapping the print layer
+ * onto the donor's opaque bounding box (both are the same mould, front-ish
+ * views). In-place on a decoded RGBA buffer. It's an approximation — a bbox
+ * stretch, not a perspective warp.
+ */
+function projectPrintData(data, W, H, print, opts = {}) {
+  const { strength = 0.9 } = opts;
+  let x0 = W, y0 = H, x1 = 0, y1 = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (data[(y * W + x) * 4 + 3] > 40) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+  if (bw <= 1 || bh <= 1) return;
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    const di = ((y + y0) * W + (x + x0)) * 4;
+    if (data[di + 3] < 40) continue;
+    const sx = Math.min(print.w - 1, (x / bw * print.w) | 0);
+    const sy = Math.min(print.h - 1, (y / bh * print.h) | 0);
+    const si = (sy * print.w + sx) * 4;
+    if (print.data[si + 3] === 0) continue;
+    // Modulate the print by the donor's local shading so it isn't flat.
+    const dl = luminance(data[di], data[di + 1], data[di + 2]);
+    const k = Math.min(1.15, dl / 0.8);
+    for (let c = 0; c < 3; c++) {
+      data[di + c] = clamp(print.data[si + c] * k * strength + data[di + c] * (1 - strength));
+    }
+  }
+}
+
+const colorDist = (r, g, b, c) => Math.hypot(r - c[0], g - c[1], b - c[2]);
 
 const luminance = (r, g, b) => (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 const clamp = (v) => (v < 0 ? 0 : v > 255 ? 255 : Math.round(v));
@@ -130,4 +195,12 @@ function hexToRgb(hex) {
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
 
-module.exports = { recolorToColor, markGenerated, hexToRgb, sampleDominantColor };
+module.exports = {
+  recolorToColor,
+  recolorData,
+  extractPrintLayer,
+  projectPrintData,
+  markGenerated,
+  hexToRgb,
+  sampleDominantColor,
+};

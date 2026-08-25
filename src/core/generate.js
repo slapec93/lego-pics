@@ -2,7 +2,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { recolorToColor, hexToRgb, sampleDominantColor } = require('./recolor');
+const { PNG } = require('pngjs');
+const { recolorData, projectPrintData, extractPrintLayer, hexToRgb, sampleDominantColor } = require('./recolor');
 
 const FRAME_URL = (pcc, n) =>
   `https://www.lego.com/cdn/product-assets/element.spin.photoreal/${pcc}/0000${n}.png`;
@@ -86,10 +87,15 @@ async function generateColor(args, opts = {}) {
     if (hero) log('  fetched BrickLink hero image');
   }
 
-  // 2) Target colour: sample the true colour from the hero, else the swatch RGB.
+  // 2) Target colour + print layer from the hero (true colour beats the swatch).
   let target = null;
+  let print = null;
   if (hero) {
     try { target = sampleDominantColor(hero); } catch { /* ignore */ }
+    try {
+      const p = extractPrintLayer(hero);
+      if (p && p.coverage > 0.02) { print = p; log(`  print detected (${Math.round(p.coverage * 100)}% coverage) — will estimate on each angle`); }
+    } catch { /* ignore */ }
   }
   if (!target && targetHex) target = hexToRgb(targetHex);
   if (!target && !hero) return { ok: false, error: 'no colour to recolour to (no hero image, no RGB)' };
@@ -119,7 +125,12 @@ async function generateColor(args, opts = {}) {
       const src = n === 1 ? donor.firstFrame : await fetchFrame(donor.pcc, n, signal);
       if (!src) continue;
       let out;
-      try { out = recolorToColor(src, target); } catch (e) { log(`  recolor failed frame ${n}: ${e.message}`); continue; }
+      try {
+        const png = PNG.sync.read(src);
+        recolorData(png.data, target);
+        if (print) projectPrintData(png.data, png.width, png.height, print);
+        out = PNG.sync.write(png);
+      } catch (e) { log(`  frame ${n} failed: ${e.message}`); continue; }
       const file = path.join(outDir, `${donor.pcc}_0000${n}_generated.png`);
       fs.writeFileSync(file, out);
       saved.push(file);
